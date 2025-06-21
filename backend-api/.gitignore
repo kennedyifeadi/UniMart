@@ -1,0 +1,26 @@
+# this is a template file, copy it to .env and fill in the values
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.test
+
+# Build artifacts
+dist/
+coverage/
+
+# Logs
+*.log
+logs/
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Test artifacts
+junit.xml
+test-results/
