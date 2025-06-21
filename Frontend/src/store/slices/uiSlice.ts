@@ -1,0 +1,1 @@
+// Manages UI state like modals, theme, etc.
