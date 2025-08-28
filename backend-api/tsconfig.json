@@ -1,4 +1,3 @@
-// this is the jest config for the backend-api package
 {
   "compilerOptions": {
     "target": "ES2022",
