@@ -3,12 +3,19 @@ import AuthService from '../services/AuthService';
 
 const authService = AuthService;
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export class AuthController {
   static async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password, role } = req.body;
       if (!email || !password || !role) {
         return res.status(400).json({ error: 'Email, password, and role are required.' });
+      }
+      if (!isValidEmail(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
       }
       const { accessToken, refreshToken } = await authService.signup({ email, passwordHash: password, role });
       res.status(201).json({ accessToken, refreshToken });
