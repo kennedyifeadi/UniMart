@@ -4,7 +4,9 @@
   "description": "**UniMart** is a campus-focused online marketplace tailored for the University of Ibadan. It connects student customers with student-owned businesses — from product vendors (e.g., food, fashion, gadgets) to service providers (e.g., writers, tutors, designers).",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
     "test": "jest"
   },
   "repository": {

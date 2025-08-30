@@ -27,7 +27,7 @@ describe('Auth API', () => {
 		await mongoose.connection.close();
 	});
 
-	afterEach(async () => {
+	beforeEach(async () => {
 		await User.deleteMany({});
 	});
 
@@ -68,6 +68,7 @@ describe('Auth API', () => {
 
 	describe('POST /auth/login', () => {
 		beforeEach(async () => {
+			await User.deleteMany({});
 			await request(app)
 				.post('/auth/register')
 				.send({ email: 'login@example.com', password: 'Password1!', role: 'customer' });
