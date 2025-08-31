@@ -1,21 +1,21 @@
-import User, { IUser } from '../models/User';
+import UserModel, { User } from '../models/User.model';
 
 class UserRepository {
-  async createUser(userData: Partial<IUser>): Promise<IUser> {
-    const user = new User(userData);
+  async createUser(userData: Partial<User>): Promise<User> {
+    const user = new UserModel(userData);
     return await user.save();
   }
 
-  async findByEmail(email: string): Promise<IUser | null> {
-    return await User.findOne({ email });
+  async findByEmail(email: string): Promise<User | null> {
+    return await UserModel.findOne({ email });
   }
 
-  async findById(id: string): Promise<IUser | null> {
-    return await User.findById(id);
+  async findById(id: string): Promise<User | null> {
+    return await UserModel.findById(id);
   }
 
-  async updateUser(id: string, user: Partial<IUser>): Promise<IUser | null> {
-    return await User.findByIdAndUpdate(id, user, { new: true });
+  async updateUser(id: string, user: Partial<User>): Promise<User | null> {
+    return await UserModel.findByIdAndUpdate(id, user, { new: true });
   }
 }
 

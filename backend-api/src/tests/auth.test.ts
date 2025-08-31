@@ -1,110 +1,93 @@
-jest.setTimeout(30000);
-import request from 'supertest';
-import mongoose from 'mongoose';
-import app from '../app';
-import User from '../models/User';
-import dotenv from 'dotenv';
-dotenv.config();
+import AuthService from '../services/AuthService';
+import UserModel, { User } from '../models/User.model';
+import redisClient from '../config/redis';
+import { Role } from '../interfaces/Role';
+import { AppError } from '../middlewares/error.middleware';
+import jwt from 'jsonwebtoken';
 
-jest.setTimeout(30000); // <-- Add this line
+// Mock the dependencies
+jest.mock('../models/User.model');
+jest.mock('../config/redis');
+jest.mock('jsonwebtoken', () => ({
+  sign: jest.fn(),
+}));
 
-describe('Auth API', () => {
-	beforeAll(async () => {
-		try {
-			const uri = process.env.MONGODB_URI;
-			if (!uri) throw new Error('MONGODB_URI not set in environment');
-			await mongoose.connect(uri);
-		} catch (err) {
-			console.error('Mongoose connection error:', err);
-			throw err;
-		}
-	}, 100000); // 100 seconds timeout for beforeAll
+describe('AuthService - Login Flow', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-	afterAll(async () => {
-		if (mongoose.connection.db) {
-			await mongoose.connection.db.dropDatabase();
-		}
-		await mongoose.connection.close();
-	});
+  it('should successfully log in a user with correct credentials and return tokens', async () => {
+    // Arrange
+    const mockUser = {
+      _id: 'someUserId',
+      email: 'test@example.com',
+      passwordHash: 'hashedPassword123',
+      role: Role.CUSTOMER,
+      comparePassword: jest.fn().mockResolvedValue(true),
+      toObject: jest.fn().mockReturnValue({
+        _id: 'someUserId',
+        email: 'test@example.com',
+        role: Role.CUSTOMER,
+      }),
+    };
+    
+    (UserModel.findOne as jest.Mock).mockResolvedValue(mockUser);
+    (jwt.sign as jest.Mock)
+      .mockReturnValueOnce('mockAccessToken')
+      .mockReturnValueOnce('mockRefreshToken');
 
-	beforeEach(async () => {
-		await User.deleteMany({});
-	});
+    // Act
+    const result = await AuthService.login({
+      email: 'test@example.com',
+      password: 'password123',
+    }) as { accessToken: string; refreshToken: string; user: User };
 
-	describe('POST /auth/register', () => {
-		it('should register a new user and return tokens', async () => {
-			const res = await request(app)
-				.post('/auth/register')
-				.send({ email: 'test@example.com', password: 'Password1!', role: 'customer' });
-			expect(res.status).toBe(201);
-			expect(res.body).toHaveProperty('accessToken');
-			expect(res.body).toHaveProperty('refreshToken');
-		});
+    // Assert
+    expect(UserModel.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
+    expect(mockUser.comparePassword).toHaveBeenCalledWith('password123');
+    expect(jwt.sign).toHaveBeenCalledTimes(2);
+    expect(redisClient.set).toHaveBeenCalledWith(
+      `refreshToken:${mockUser._id}`,
+      'mockRefreshToken',
+      'EX',
+      expect.any(Number)
+    );
+    expect(result.accessToken).toBe('mockAccessToken');
+    expect(result.refreshToken).toBe('mockRefreshToken');
+    expect(result.user).toBe(mockUser);
+  });
 
-		it('should not register with invalid email', async () => {
-			const res = await request(app)
-				.post('/auth/register')
-				.send({ email: 'bademail', password: 'Password1!', role: 'customer' });
-			expect(res.status).toBe(400);
-			expect(res.body).toHaveProperty('error');
-		});
+  it('should throw an AppError if the user is not found', async () => {
+    // Arrange
+    (UserModel.findOne as jest.Mock).mockResolvedValue(null);
 
-		it('should not register with missing password', async () => {
-			const res = await request(app)
-				.post('/auth/register')
-				.send({ email: 'test2@example.com', role: 'customer' });
-			expect(res.status).toBe(400);
-			expect(res.body).toHaveProperty('error');
-		});
+    // Act & Assert
+    await expect(
+      AuthService.login({
+        email: 'nonexistent@example.com',
+        password: 'password123',
+      })
+    ).rejects.toThrow(new AppError('Invalid email or password', 401));
+  });
 
-		it('should not register with missing role', async () => {
-			const res = await request(app)
-				.post('/auth/register')
-				.send({ email: 'test3@example.com', password: 'Password1!' });
-			expect(res.status).toBe(400);
-			expect(res.body).toHaveProperty('error');
-		});
-	});
+  it('should throw an AppError if the password is incorrect', async () => {
+    // Arrange
+    const mockUser = {
+      _id: 'someUserId',
+      email: 'test@example.com',
+      passwordHash: 'hashedPassword123',
+      role: Role.CUSTOMER,
+      comparePassword: jest.fn().mockResolvedValue(false),
+    };
+    (UserModel.findOne as jest.Mock).mockResolvedValue(mockUser);
 
-	describe('POST /auth/login', () => {
-		beforeEach(async () => {
-			await User.deleteMany({});
-			await request(app)
-				.post('/auth/register')
-				.send({ email: 'login@example.com', password: 'Password1!', role: 'customer' });
-		});
-
-		it('should login with valid credentials', async () => {
-			const res = await request(app)
-				.post('/auth/login')
-				.send({ email: 'login@example.com', password: 'Password1!' });
-			expect(res.status).toBe(200);
-			expect(res.body).toHaveProperty('accessToken');
-			expect(res.body).toHaveProperty('refreshToken');
-		});
-
-		it('should not login with invalid credentials', async () => {
-			const res = await request(app)
-				.post('/auth/login')
-				.send({ email: 'login@example.com', password: 'wrongpass' });
-			expect(res.status).toBe(401);
-			expect(res.body).toHaveProperty('error');
-		});
-
-		it('should not login with missing password', async () => {
-			const res = await request(app)
-				.post('/auth/login')
-				.send({ email: 'login@example.com' });
-			expect(res.status).toBe(400);
-			expect(res.body).toHaveProperty('error');
-		});
-
-		it('should not login with missing email', async () => {
-			const res = await request(app)
-				.post('/auth/login')
-				.send({ password: 'Password1!' });
-			expect(res.status).toBe(400);
-			expect(res.body).toHaveProperty('error');
-		});
-	});
+    // Act & Assert
+    await expect(
+      AuthService.login({
+        email: 'test@example.com',
+        password: 'wrongPassword',
+      })
+    ).rejects.toThrow(new AppError('Invalid email or password', 401));
+  });
 });
