@@ -268,16 +268,6 @@ router.get('/google/callback', AuthController.googleCallback);
  *     tags: [Authentication]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               refreshToken:
- *                 type: string
- *                 description: The refresh token to invalidate.
  *     responses:
  *       200:
  *         description: Logged out successfully
