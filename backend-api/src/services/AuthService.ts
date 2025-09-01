@@ -13,6 +13,7 @@ import {
   resetPasswordSchema,
   verifySecurityQuestionSchema,
 } from '../utils/validationSchemas';
+import { sendEmail } from '../utils/email';
 import { AppError } from '../middlewares/error.middleware';
 
 // --- Configuration ---
@@ -80,7 +81,7 @@ class AuthService {
     pipeline.expire(rateLimitKey, 3600);
     await pipeline.exec();
 
-    console.log(`Sending OTP ${otp} to ${email}`);
+    await sendEmail(email, 'Your OTP Code', `Your OTP code is: ${otp}`);
   }
 
   public async verifyOtp(data: z.infer<typeof verifyOtpSchema>): Promise<{ accessToken: string; refreshToken: string; user: User }> {
@@ -110,7 +111,8 @@ class AuthService {
     }
 
     const token = jwt.sign({ id: user._id }, JWT_RESET_SECRET, { expiresIn: '10m' });
-    console.log(`Password reset link: /reset-password?token=${token}`);
+    const resetLink = `http://localhost:3000/reset-password?token=${token}`; // Assuming a frontend route
+    await sendEmail(email, 'Password Reset', `Click here to reset your password: ${resetLink}`);
   }
 
   public async resetPassword(data: z.infer<typeof resetPasswordSchema>): Promise<void> {
