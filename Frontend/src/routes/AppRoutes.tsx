@@ -5,6 +5,7 @@ import Login from "../pages/Login"
 import SignUp from "../pages/SignUp"
 import Vendors from "../pages/Vendors"
 import NotFound from "../pages/NotFound"
+import BecomeAVendor from "../pages/BecomeAVendor"
 
 export const AppRoutes = () => {
   return (
@@ -14,6 +15,7 @@ export const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/becomeavendor" element={<BecomeAVendor />} />
       <Route path="/vendors" element={<Vendors />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

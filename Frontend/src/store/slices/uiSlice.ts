@@ -18,8 +18,11 @@ const uiSlice = createSlice({
         closeModal: (state) => {
             state.isModalOpen = false;
         },
+        toggleModal: (state) => {
+            state.isModalOpen = !state.isModalOpen;
+        },
     },
 });
 
-export const { openModal, closeModal } = uiSlice.actions;
+export const { openModal, closeModal, toggleModal } = uiSlice.actions;
 export default uiSlice.reducer;
