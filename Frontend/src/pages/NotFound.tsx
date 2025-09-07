@@ -1,6 +1,8 @@
+import withMainLayout from "../layouts/MainLayout"
 
-export const NotFound = () => {
+const NotFound = () => {
   return (
     <div>NotFound</div>
   )
 }
+export default withMainLayout(NotFound)

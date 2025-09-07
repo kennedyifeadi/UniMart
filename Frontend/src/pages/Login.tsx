@@ -1,6 +1,9 @@
+import withMainLayout from "../layouts/MainLayout"
 
-export const Login = () => {
+const Login = () => {
   return (
     <div>Login</div>
   )
 }
+
+export default withMainLayout(Login)
