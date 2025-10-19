@@ -2,7 +2,6 @@ import fashion from '../assets/images/Fashion_Unimart.jpg'
 import food from '../assets/images/Food_Unimart.jpg'
 import electronics from '../assets/images/Electronics_Unimart.jpg'
 import education from '../assets/images/Education_Unimart.jpg'
-import withMainLayout from '../layouts/MainLayout'
 
 const Home = () => {
   const testimonialsCardDetails = [
@@ -92,4 +91,4 @@ const Home = () => {
 }
 
 
-export default withMainLayout(Home)
+export default Home

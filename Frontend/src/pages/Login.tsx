@@ -1,4 +1,3 @@
-import withMainLayout from "../layouts/MainLayout"
 
 const Login = () => {
   return (
@@ -6,4 +5,4 @@ const Login = () => {
   )
 }
 
-export default withMainLayout(Login)
+export default Login

@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom"
 import { SearchBar } from "./SearchBar"
 import { LuUserRound } from "react-icons/lu";
+import { IoClose } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { Modal } from "./Modal";
 import { toggleModal } from "../../store/slices/uiSlice";
+import { HiOutlineMenu } from "react-icons/hi";
+import { useMediaQuery } from "react-responsive";
 
 export const NavBar = () => {
   const dispatch = useDispatch()
   const { isModalOpen } = useSelector((state: RootState) => state.ui)
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const navList = [
     {
       name: "Home",
@@ -27,25 +31,68 @@ export const NavBar = () => {
       link: "/becomeavendor"
     }
   ]
+  const mobileMOdalList = [
+        {
+            title: "Login",
+            link: "/login"
+        },
+        {
+            title: "Sign Up",
+            link: "/signup"
+        },
+  ]
   return (
     <div className="w-full h-14 border-b border-gray-100 justify-between flex px-8 items-center">
-      <div className="font-semibold text-[#2563eb] w-[25%] text-2xl" style={{fontFamily: 'cursive'}}>UniMart</div>
-      <div className="flex gap-2  w-[35%] justify-between">
+      <div className="font-semibold text-[#2563eb] w-[25%] text-2xl" style={{ fontFamily: 'cursive' }}>UniMart</div>
+      {/* Desktop Navigation */}
+      <div className="gap-2  w-[35%] justify-between hidden md:flex">
         {
           navList.map((nav, index) => (
-            <Link key={index} to={nav.link} className="text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[16px]">
+            <Link key={index} to={nav.link} className="text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[18px]">
               {nav.name}
             </Link>
           ))
         }
       </div>
-      <div className="w-[40%] flex justify-end items-center">
-        <SearchBar />
+      <div className="w-[40%] justify-end items-center hidden md:flex">
+        <div className="w-[40%]">
+          <SearchBar />
+        </div>
         <span className="ml-4 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer" onClick={() => dispatch(toggleModal())}>
           <LuUserRound className="text-black" size={18} />
         </span>
         {isModalOpen && (<Modal />)}
       </div>
+
+      {/* Mobile Navigation */}
+      <span>
+        {
+          isModalOpen ? <IoClose className="md:hidden cursor-pointer" size={25} onClick={() => dispatch(toggleModal())} /> : <HiOutlineMenu className="md:hidden cursor-pointer" size={25} onClick={() => dispatch(toggleModal())} />
+        }
+        {isModalOpen && isMobile && (
+          <>
+            <div className="absolute top-14 right-0 bg-white shadow-lg rounded-md p-4 w-full flex flex-col gap-3.5">
+              <SearchBar />
+              <div className="flex flex-col gap-3">
+                {navList.map((nav, index) => (
+                  <Link key={index} to={nav.link} className="block text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[16px]">
+                    {nav.name}
+                  </Link>
+                ))}
+              </div>
+              <span className="h-[1px] w-full bg-gray-200"></span>
+              <div className="flex flex-col gap-3">
+                {mobileMOdalList.map((modal, index) => (
+                  <Link key={index} to={modal.link} className="block text-gray-600 hover:text-blue-500 cursor-pointer font-normal text-[16px]">
+                    {modal.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+      </span>
     </div>
   )
 }

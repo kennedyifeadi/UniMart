@@ -1,4 +1,3 @@
-import withMainLayout from '../layouts/MainLayout'
 
 const About = () => {
   return (
@@ -6,4 +5,4 @@ const About = () => {
   )
 }
 
-export default withMainLayout(About)
+export default About

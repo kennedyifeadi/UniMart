@@ -1,4 +1,3 @@
-import withMainLayout from "../layouts/MainLayout"
 
 const SignUp = () => {
   return (
@@ -6,4 +5,4 @@ const SignUp = () => {
   )
 }
 
-export default withMainLayout(SignUp)
+export default SignUp

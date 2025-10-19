@@ -1,4 +1,3 @@
-import withMainLayout from "../layouts/MainLayout"
 
 export const BecomeAVendor = () => {
   return (
@@ -6,5 +5,5 @@ export const BecomeAVendor = () => {
   )
 }
 
-export default withMainLayout(BecomeAVendor)
+export default BecomeAVendor
 

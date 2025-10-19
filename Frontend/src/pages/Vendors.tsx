@@ -1,4 +1,3 @@
-import withMainLayout from '../layouts/MainLayout'
 
 const Vendors = () => {
   return (
@@ -6,4 +5,4 @@ const Vendors = () => {
   )
 }
 
-export default withMainLayout(Vendors)
+export default Vendors
