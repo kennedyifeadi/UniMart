@@ -64,7 +64,7 @@ const Home = () => {
       image: electronics
     },
     {
-      name: 'Campus Threads',
+      name: 'Campus Threads ',
       description: 'Trendy fashion for the modern student',
       link: 'vendor3.com',
       category: 'fashion',
