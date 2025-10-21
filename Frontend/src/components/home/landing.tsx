@@ -1,7 +1,7 @@
 import { DynamicBackground } from "./DynamicBackground"
 import Bg from "../../assets/images/Aerial_view_in_University_of_Ibadan.jpg"
 
-export const Landing = () => {
+export const LandingPage = () => {
     return (
         <div className='w-full h-[100dvh] flex gap-4 relative'>
             <DynamicBackground image={Bg} />

@@ -12,7 +12,7 @@ import type { FeaturedVendorsCardProps } from '../components/home/FeaturedVendor
 import { TestimonialsCard } from '../components/home/TestimonialsCard'
 import type { TestimonialsCardProps } from '../components/home/TestimonialsCard'
 import { Carousel } from '../components/carousel/Carousel'
-import { Landing } from '../components/home/Landing'
+import { LandingPage } from '../components/home/Landing'
 
 
 const Home = () => {
@@ -101,7 +101,7 @@ const Home = () => {
   ]
   return (
     <div className='w-full h-max flex flex-col relative'>
-      <Landing />
+      <LandingPage />
       {/* Trusted Community Section */}
       <div className='p-4 md:py-16 py-10 flex flex-col items-center bg-[#f9fafb]'>
         <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>Trusted by the UI Community</h1>
