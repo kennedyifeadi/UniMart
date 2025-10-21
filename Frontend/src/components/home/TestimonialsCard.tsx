@@ -1,0 +1,31 @@
+import { MdOutlineStar } from "react-icons/md";
+
+export interface TestimonialsCardProps {
+  name: string;
+  feedback: string;
+  image: string;
+  rating: number;
+  faculty: string;
+}
+
+export const TestimonialsCard = ({ name, feedback, image, rating, faculty }: TestimonialsCardProps) => {
+  return (
+    <div className="w-full md:w-full lg:w-[65%] h-[350px] rounded-2xl bg-white shadow-2xl p-4 flex flex-col gap-6 justify-center items-center">
+        <span className="text-[#facc15] flex ">
+          {Array.from({ length: rating }, (_, i) => (
+            <MdOutlineStar key={i} size={24} />
+          ))}
+        </span>
+        <p className="text-gray-700 text-2xl px-2 text-center">{feedback}</p>
+        <div className="flex items-center">
+            <span className="w-20 h-20 rounded-full overflow-hidden mr-4">
+                <img src={image} alt={name} className="w-full h-full"/>
+            </span>
+            <span className="flex flex-col">
+                <h2 className="font-medium text-lg">{name}</h2>
+                <p className="text-gray-700">{faculty}</p>
+            </span>
+        </div>
+    </div>
+  )
+}
