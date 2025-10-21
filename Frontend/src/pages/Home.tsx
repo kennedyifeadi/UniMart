@@ -12,7 +12,7 @@ import type { FeaturedVendorsCardProps } from '../components/home/FeaturedVendor
 import { TestimonialsCard } from '../components/home/TestimonialsCard'
 import type { TestimonialsCardProps } from '../components/home/TestimonialsCard'
 import { Carousel } from '../components/carousel/Carousel'
-import { LandingPage } from '../components/home/Landing'
+import { LandingPage } from '../components/home/LandingPage'
 
 
 const Home = () => {
