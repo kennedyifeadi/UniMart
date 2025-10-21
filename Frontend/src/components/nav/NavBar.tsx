@@ -42,7 +42,7 @@ export const NavBar = () => {
         },
   ]
   return (
-    <div className="w-full h-14 border-b border-gray-100 justify-between flex px-8 items-center">
+    <div className="w-full h-14 border-b border-gray-100 justify-between flex px-8 items-center fixed top-0 bg-white z-50">
       <div className="font-semibold text-[#2563eb] w-[25%] text-2xl" style={{ fontFamily: 'cursive' }}>UniMart</div>
       {/* Desktop Navigation */}
       <div className="gap-2  w-[35%] justify-between hidden md:flex">
