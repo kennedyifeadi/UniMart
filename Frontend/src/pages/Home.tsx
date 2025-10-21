@@ -2,15 +2,27 @@ import fashion from '../assets/images/Fashion_Unimart.jpg'
 import food from '../assets/images/Food_Unimart.jpg'
 import electronics from '../assets/images/Electronics_Unimart.jpg'
 import education from '../assets/images/Education_Unimart.jpg'
+import { Landing } from '../components/home/Landing'
+import { TrustCard } from '../components/home/TrustCard'
+import type { TrustCardProps } from '../components/home/TrustCard'
+import { RiUserFill } from "react-icons/ri";
+import { HiBuildingStorefront } from "react-icons/hi2";
+import { HiMiniBuildingOffice2 } from "react-icons/hi2";
+import { FeaturedVendorsCard } from '../components/home/FeaturedVendorsCard'
+import type { FeaturedVendorsCardProps } from '../components/home/FeaturedVendorsCard'
+import { TestimonialsCard } from '../components/home/TestimonialsCard'
+import type { TestimonialsCardProps } from '../components/home/TestimonialsCard'
+import { Carousel } from '../components/carousel/Carousel'
+
 
 const Home = () => {
-  const testimonialsCardDetails = [
+  const testimonialsCardDetails: TestimonialsCardProps[] = [
     {
       name: 'Alice Johnson',
       feedback: '"I love how easy it is to connect with other students and local businesses. The interface is beautiful and user-friendly. Unimart truly understands what students need!"',
       image: 'https://randomuser.me/api/portraits/women/1.jpg',
-      rateing: 5,
-      faculty: 'Technology',
+      rating: 5,
+      faculty: 'Faculty Technology',
     },
     {
       name: 'Michael Smith',
@@ -34,7 +46,7 @@ const Home = () => {
       faculty: 'Business',
     }
   ]
-  const featureedVendors = [
+  const featuredVendors: FeaturedVendorsCardProps[] = [
     {
       name: "Sarah's Snack Hub",
       description: 'Healthy snacks and fresh meals for busy students',
@@ -56,7 +68,7 @@ const Home = () => {
       description: 'Trendy fashion for the modern student',
       link: 'vendor3.com',
       category: 'fashion',
-      verified: false,
+      verified: true,
       image: fashion
     },
     {
@@ -68,25 +80,60 @@ const Home = () => {
       image: education
     }
   ]
-  const trustCardDetails = [
+
+  const trustCardDetails: TrustCardProps[] = [
     {
       name: 'UI Student',
-      number: "5000+",
-      icon: 'student'
+      number: "5,000+",
+      icon: <RiUserFill />
     },
     {
       name: 'Student Vendors',
       number: "150+",
-      icon: 'product'
+      icon: <HiBuildingStorefront />
     },
     {
       name: 'Faculties Served',
       number: "12",
-      icon: 'happy-user'
+      icon: <HiMiniBuildingOffice2 />
+
     }
   ]
   return (
-    <div>Home</div>
+    <div className='w-full h-max flex flex-col relative'>
+      <Landing />
+      {/* Trusted Community Section */}
+      <div className='p-4 md:py-16 py-10 flex flex-col items-center bg-[#f9fafb]'>
+        <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>Trusted by the UI Community</h1>
+        <span className='text-center tracking-wide font-normal md:text-xl text-sm text-gray-700'>Growing stronger every day with amazing students and businesses</span>
+        <div className='flex flex-wrap justify-around w-[90%] mt-10'>
+          {trustCardDetails.map((card, index) => (
+            <TrustCard key={index} {...card} />
+          ))}
+        </div>
+      </div>
+      {/* Featured Vendors Section */}
+      <div className='p-4 pt-10 md:pt-16 flex flex-col items-center bg-white'>
+        <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>Featured Vendors</h1>
+        <span className='text-center tracking-wide font-normal md:text-xl text-sm text-gray-700'>Discover amazing businesses run by your fellow students</span>
+        <div className='flex flex-wrap justify-around w-[90%] mt-16'>
+          {featuredVendors.map((vendor, index) => (
+            <FeaturedVendorsCard key={index} {...vendor} />
+          ))}
+        </div>
+      </div>
+      <div className='p-4 py-10 md:py-16 flex flex-col items-center bg-[#f9fafb]'>
+        <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>What Students Say</h1>
+        <span className='text-center tracking-wide font-normal md:text-xl  text-sm text-gray-700'>Real experiences from our amazing UI community</span>
+        <div className='flex justify-center items-center w-[90%] mt-20'>
+          <Carousel autoPlayInterval={3000}>
+            {testimonialsCardDetails.map((testimonial, index) => (
+              <TestimonialsCard key={index} {...testimonial} />
+            ))}
+          </Carousel>
+        </div>
+      </div>
+    </div>
   )
 }
 
