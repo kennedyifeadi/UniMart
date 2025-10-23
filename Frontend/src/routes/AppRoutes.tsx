@@ -12,8 +12,8 @@ import withMainLayout from '../layouts/WithMainLayout'
 export const AppRoutes = () => {
   const HomeWithLayout = withMainLayout(Home);
   const AboutWithLayout = withMainLayout(About);
-  const LoginWithLayout = withMainLayout(Login);
-  const SignUpWithLayout = withMainLayout(SignUp);
+  // const LoginWithLayout = withMainLayout(Login);
+  // const SignUpWithLayout = withMainLayout(SignUp);
   const VendorsWithLayout = withMainLayout(Vendors);
   const BecomeAVendorWithLayout = withMainLayout(BecomeAVendor);
   const NotFoundWithLayout = withMainLayout(NotFound);
@@ -22,8 +22,8 @@ export const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<HomeWithLayout />} />
       <Route path="/about" element={<AboutWithLayout />} />
-      <Route path="/login" element={<LoginWithLayout />} />
-      <Route path="/signup" element={<SignUpWithLayout />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/becomeavendor" element={<BecomeAVendorWithLayout />} />
       <Route path="/vendors" element={<VendorsWithLayout />} />
       <Route path="*" element={<NotFoundWithLayout />} />
