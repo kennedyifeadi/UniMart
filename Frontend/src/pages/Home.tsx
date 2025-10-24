@@ -13,6 +13,8 @@ import { TestimonialsCard } from '../components/home/TestimonialsCard'
 import type { TestimonialsCardProps } from '../components/home/TestimonialsCard'
 import { Carousel } from '../components/carousel/Carousel'
 import { LandingPage } from '../components/home/LandingPage'
+import { Heading1 } from '../components/headings/Heading1'
+import { Heading3 } from '../components/headings/Heading3'
 
 
 const Home = () => {
@@ -104,8 +106,8 @@ const Home = () => {
       <LandingPage />
       {/* Trusted Community Section */}
       <div className='p-4 md:py-16 py-10 flex flex-col items-center bg-[#f9fafb]'>
-        <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>Trusted by the UI Community</h1>
-        <span className='text-center tracking-wide font-normal md:text-xl text-sm text-gray-700'>Growing stronger every day with amazing students and businesses</span>
+        <Heading1>Trusted by the UI Community</Heading1>
+        <Heading3>Growing stronger every day with amazing students and businesses</Heading3>
         <div className='flex flex-wrap justify-around gap-4 md:gap-0 w-[90%] mt-10'>
           {trustCardDetails.map((card, index) => (
             <TrustCard key={index} {...card} />
@@ -114,8 +116,8 @@ const Home = () => {
       </div>
       {/* Featured Vendors Section */}
       <div className='p-4 pt-10 md:pt-16 flex flex-col items-center bg-white'>
-        <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>Featured Vendors</h1>
-        <span className='text-center tracking-wide font-normal md:text-xl text-sm text-gray-700'>Discover amazing businesses run by your fellow students</span>
+        <Heading1>Featured Vendors</Heading1>
+        <Heading3>Discover amazing businesses run by your fellow students</Heading3>
         {/* Mobile Carousel View */}
         <div className='md:hidden w-[90%] mt-16'>
           <Carousel autoPlayInterval={0}>
@@ -132,8 +134,8 @@ const Home = () => {
         </div>
       </div>
       <div className='p-4 py-10 md:py-16 flex flex-col items-center bg-[#f9fafb]'>
-        <h1 className='text-3xl md:text-5xl text-center font-bold md:mb-3'>What Students Say</h1>
-        <span className='text-center tracking-wide font-normal md:text-xl  text-sm text-gray-700'>Real experiences from our amazing UI community</span>
+        <Heading1>What Students Say</Heading1>
+        <Heading3>Real experiences from our amazing UI community</Heading3>
         <div className='flex justify-center items-center w-[90%] mt-20'>
           <Carousel autoPlayInterval={3000}>
             {testimonialsCardDetails.map((testimonial, index) => (
