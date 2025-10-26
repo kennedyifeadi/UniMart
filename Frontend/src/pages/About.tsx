@@ -1,17 +1,153 @@
+import { Landing } from "../components/about/Landing"
+import { Story, type StoryProps } from "../components/about/Story"
 import { Heading1 } from "../components/headings/Heading1"
 import { Heading3 } from "../components/headings/Heading3"
+import studentImage from "../assets/images/UI-students.jpg"
+import { GoalCard } from "../components/about/GoalCard"
+import { RiShieldCheckLine } from "react-icons/ri";
+import { RiSmartphoneLine } from "react-icons/ri";
+import { GrGroup } from "react-icons/gr";
+import { RiShoppingBag3Line } from "react-icons/ri";
+
+
+
 
 const About = () => {
+  const ourStoryPoints: StoryProps[] = [
+    {
+      title: 'The Problem We Saw',
+      description: "UI students with amazing businesses and services struggled with visibility and limited reach. Many talented entrepreneurs couldn't connect with their fellow students who needed their products and services."
+    },
+    {
+      title: 'Our Vision',
+      description: "We envisioned a centralized marketplace where UI students could easily discover, connect, and support each other. A platform that brings the entire campus community together in one digital space."
+    },
+    {
+      title: 'Our Mission',
+      description: "To boost student entrepreneurship by providing a trusted platform that connects student businesses with their peers, fostering economic growth and community support within the UI ecosystem."
+    }
+  ]
+  const goals = [
+    {
+      title: 'Easy Discovery',
+      description: 'Help students easily discover businesses and services from their fellow UI students with intuitive search and categories.',
+      icon: <RiShoppingBag3Line size={30} />
+    },
+    {
+      title: 'Community Support',
+      description: 'Boost entrepreneurship and community support by connecting student businesses with their target audience.',
+      icon: <GrGroup size={30} />
+    },
+    {
+      title: 'Trusted Connections',
+      description: 'Provide safe and trusted vendor connections through our UI verification system and community reviews.',
+      icon: <RiShieldCheckLine size={30} />
+    },
+    {
+      title: 'Mobile-First Experience',
+    description: 'Offer a simple, mobile-first experience that works seamlessly across all devices for busy students.',
+      icon: <RiSmartphoneLine size={30} />
+    }
+  ]
+  const teamMembers = [
+    {
+      name: 'Motunrayo',
+      role: 'Founder & CEO',
+      bio: 'Passionate about student entrepreneurship',
+      image: '',
+      linkedin: '',
+      instagram: ''
+    },
+    {
+      name: 'Abuka Victor',
+      role: 'CTO',
+      bio: 'Building technology for students',
+      image: '',
+      linkedin: '',
+      instagram: ''
+    },
+    {
+      name: 'Kennedy Ifeadi',
+      role: 'Head of Community',
+      bio: 'Creating beautiful user experiences',
+      image: '',
+      linkedin: '',
+      instagram: ''
+    },
+    {
+      name: 'Maya Sari',
+      role: 'Head of Design',
+      bio: 'Connecting students across UI',
+      image: '',
+      linkedin: '',
+      instagram: ''
+    }
+
+  ]
+  const studentVoices = [
+    {
+      name: 'Jane Doe',
+      testimonial: 'Unimart gave me the confidence to start my online tutoring business. The platform makes it so easy to connect with students who need help with their studies!',
+      image: '',
+      rating: 5,
+      faculty: 'Faculty of Engineering'
+    },
+    {
+      name: 'John Smith',
+      testimonial: 'Between classes and clinical rotations, Unimart helps me find quick food options and study materials from fellow students. It saves me so much time!',
+      image: '',
+      rating: 4,
+      faculty: 'Faculty of Law'
+    },
+    {
+      name: 'Abuka Victor',
+      testimonial: 'As a graphic design student, I found so many clients through Unimart. The verification system makes everyone feel safe to do business with each other.',
+      image: '',
+      rating: 5,
+      faculty: 'Faculty of Business'
+    },
+    {
+      name: 'Linda Nguyen',
+      testimonial: 'The community aspect of Unimart is incredible. It feels like we are all supporting each other to succeed. This is what university life should be about!',
+      image: '',
+      rating: 5,
+      faculty: 'Faculty of Arts'
+    }
+  ]
   return (
     <div className="flex flex-col w-full h-max relative">
       {/* About landing section */}
-      <div></div>
+      <Landing />
       {/* Our story section */}
-      <div></div>
+      <div className="flex flex-col md:px-36 px-6 py-10 md:flex-row gap-6 mb-10">
+        <div className="flex-1 flex gap-6 flex-col">
+          <Heading1 className="text-start">Our Story</Heading1>
+        {
+          ourStoryPoints.map((point, index) => (
+            <Story {...point} key={index} />
+          ))
+        }
+        </div>
+        <div className="flex-1 flex justify-center items-center">
+          <div className="w-full h-max relative">
+          <div className="absolute inset-0 rounded-xl bg-black/65 h-full w-full flex justify-center items-center"></div>
+          <img src={studentImage} alt="UI Students" className="w-full h-auto rounded-xl shadow-xl" />
+          </div>
+        </div>
+      </div>
       {/* Our goals section */}
-      <div>
-        <Heading1>Our Goals</Heading1>
+      <div className="flex flex-col mb-10 gap-10 ">
+        <div className="flex flex-col">
+          <Heading1>Our Goals</Heading1>
         <Heading3>We're committed to building a platform that truly serves the UI student community</Heading3>
+        </div>
+        <div className="flex justify-center gap-8">
+          {
+            goals.map((goal, index) => (
+              <GoalCard {...goal} key={index} />
+            ))
+          }
+        </div>
       </div>
       {/* Meet the team section */}
       <div>
