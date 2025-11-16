@@ -12,7 +12,7 @@ export interface TeamCardProps {
 }
 export const TeamCard = ({ name, role, bio, image, linkedin, instagram }: TeamCardProps) => {
   return (
-    <div className="p-4 rounded-xl cursor-pointer group shadow-lg hover:shadow-xl duration-300 ease-in-out flex flex-col items-center w-[300px] h-[380px]">
+    <div className="p-4 rounded-xl cursor-pointer group shadow-lg hover:shadow-xl duration-300 ease-in-out flex flex-col items-center w-[90%] md:w-[300px] h-[380px]">
       <div className="w-full h-[40%] flex justify-center">
         <div className="w-32 h-32 relative">
           <div className="absolute top-0 bg-[#2564eb22] rounded-full w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

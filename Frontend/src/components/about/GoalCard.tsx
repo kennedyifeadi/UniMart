@@ -9,7 +9,7 @@ export const GoalCard = ({
   icon
 }: GoalCardProps) => {
   return (
-    <div className="p-4 rounded-xl cursor-pointer shadow-lg hover:shadow-xl duration-300 ease-in-out flex flex-col pt-12 items-center w-[300px] h-[350px]">
+    <div className="p-4 rounded-xl cursor-pointer shadow-lg hover:shadow-xl duration-300 ease-in-out flex flex-col pt-12 items-center w-[90%] md:w-[300px] h-[350px]">
       <div className="flex items-center justify-center mb-2 bg-[#dbeafe] text-[#2563eb] p-4 rounded-full">
         {icon}
       </div>

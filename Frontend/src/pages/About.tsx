@@ -11,6 +11,7 @@ import { RiShoppingBag3Line } from "react-icons/ri";
 import { TeamCard } from "../components/about/TeamCard"
 import maleProfile from "../assets/images/MaleProfile.jpg"
 import FemaleProfile from "../assets/images/FemaleProfile.jpg"
+import { StudentCard } from "../components/about/StudentCard"
 
 
 
@@ -88,36 +89,36 @@ const About = () => {
     }
 
   ]
-  // const studentVoices = [
-  //   {
-  //     name: 'Jane Doe',
-  //     testimonial: 'Unimart gave me the confidence to start my online tutoring business. The platform makes it so easy to connect with students who need help with their studies!',
-  //     image: '',
-  //     rating: 5,
-  //     faculty: 'Faculty of Engineering'
-  //   },
-  //   {
-  //     name: 'John Smith',
-  //     testimonial: 'Between classes and clinical rotations, Unimart helps me find quick food options and study materials from fellow students. It saves me so much time!',
-  //     image: '',
-  //     rating: 4,
-  //     faculty: 'Faculty of Law'
-  //   },
-  //   {
-  //     name: 'Abuka Victor',
-  //     testimonial: 'As a graphic design student, I found so many clients through Unimart. The verification system makes everyone feel safe to do business with each other.',
-  //     image: '',
-  //     rating: 5,
-  //     faculty: 'Faculty of Business'
-  //   },
-  //   {
-  //     name: 'Linda Nguyen',
-  //     testimonial: 'The community aspect of Unimart is incredible. It feels like we are all supporting each other to succeed. This is what university life should be about!',
-  //     image: '',
-  //     rating: 5,
-  //     faculty: 'Faculty of Arts'
-  //   }
-  // ]
+  const studentVoices = [
+    {
+      name: 'Jane Doe',
+      testimonial: 'Unimart gave me the confidence to start my online tutoring business. The platform makes it so easy to connect with students who need help with their studies!',
+      image: maleProfile,
+      rating: 5,
+      faculty: 'Faculty of Engineering'
+    },
+    {
+      name: 'John Smith',
+      testimonial: 'Between classes and clinical rotations, Unimart helps me find quick food options and study materials from fellow students. It saves me so much time!',
+      image: FemaleProfile,
+      rating: 4,
+      faculty: 'Faculty of Law'
+    },
+    {
+      name: 'Abuka Victor',
+      testimonial: 'As a graphic design student, I found so many clients through Unimart. The verification system makes everyone feel safe to do business with each other.',
+      image: maleProfile,
+      rating: 5,
+      faculty: 'Faculty of Business'
+    },
+    {
+      name: 'Linda Nguyen',
+      testimonial: 'The community aspect of Unimart is incredible. It feels like we are all supporting each other to succeed. This is what university life should be about!',
+      image: FemaleProfile,
+      rating: 5,
+      faculty: 'Faculty of Arts'
+    }
+  ]
   return (
     <div className="flex flex-col w-full h-max relative">
       {/* About landing section */}
@@ -168,9 +169,18 @@ const About = () => {
         </div>
       </div>
       {/* Student voices section */}
-      <div>
-        <Heading1>Student Voices</Heading1>
-        <Heading3>Hear from UI students who are part of the Unimart community</Heading3>
+      <div className="flex flex-col mb-10 gap-10">
+        <div className="flex flex-col">
+          <Heading1>Student Voices</Heading1>
+          <Heading3>Hear from UI students who are part of the Unimart community</Heading3>
+        </div>
+        <div className="flex justify-center gap-8 flex-wrap">
+          {
+            studentVoices.map((voice, index) => (
+              <StudentCard {...voice} key={index} />
+            ))
+          }
+        </div>
       </div>
       {/* Join the movement section */}
       <div></div>
