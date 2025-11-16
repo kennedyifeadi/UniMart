@@ -9,7 +9,7 @@ export interface StoryProps {
 }
 export const StudentCard = ({ name, testimonial, rating, faculty, image }: StoryProps) => {
   return (
-    <div className="w-[90%] h-[300px] md:w-[650px] md:h-[250px] flex gap-1 shadow-xl rounded-2xl p-4 pt-10">
+    <div className="w-[90%] h-[300px] md:w-[650px] md:h-[250px] flex gap-1 shadow-xl rounded-2xl p-4 pt-10 hover:shadow-2xl duration-300 ease-in-out cursor-pointer">
       <div className="w-[30%] md:w-[20%]">
         <img src={image} alt={`${name}'s profile`} className="rounded-full w-20 h-20 md:w-24 md:h-24" />
       </div>

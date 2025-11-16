@@ -12,6 +12,7 @@ import { TeamCard } from "../components/about/TeamCard"
 import maleProfile from "../assets/images/MaleProfile.jpg"
 import FemaleProfile from "../assets/images/FemaleProfile.jpg"
 import { StudentCard } from "../components/about/StudentCard"
+import { Button } from "../components/button/Button"
 
 
 
@@ -119,6 +120,20 @@ const About = () => {
       faculty: 'Faculty of Arts'
     }
   ]
+  const stats = [
+    {
+      label: 'Active Students',
+      value: '15,000+'
+    },
+    {
+      label: 'Faculties Served',
+      value: '12'
+    },
+    {
+      label: 'Student Vendors',
+      value: '150+'
+    }
+  ]
   return (
     <div className="flex flex-col w-full h-max relative">
       {/* About landing section */}
@@ -183,7 +198,25 @@ const About = () => {
         </div>
       </div>
       {/* Join the movement section */}
-      <div></div>
+      <div className="w-full h-max py-14 flex flex-col items-center bg-[#2563eb]">
+        <Heading1 className="text-center text-white">Join the Movement</Heading1>
+        <span className="text-center font-medium md:text-2xl text-[#ffffffe2]">Discover and Support Student Businesses Today!</span>
+        <span className="text-center text-sm w-[90%] md:w-[40%] mt-10 text-[#ffffffb5]">Be part of a thriving community where UI students connect, collaborate, and grow together. Your next favorite service or product is just a click away.</span>
+        <div className="flex gap-4 md:flex-row flex-col mt-14 w-[90%] md:w-auto">
+          <Button classname="bg-white hover:!bg-[#fffffff1] !text-[#2563eb]">Explore Vendors</Button>
+          <Button classname="border border-white hover:bg-white hover:!text-[#2563eb]">Start Selling</Button>
+        </div>
+        <div className="mt-14 flex flex-col md:flex-row md:gap-20 justify-evenly gap-8 w-full">
+          {
+            stats.map((stat, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <span className="text-white font-bold text-4xl">{stat.value}</span>
+                <span className="text-[#ffffffe9] text-sm">{stat.label}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   )
 }
