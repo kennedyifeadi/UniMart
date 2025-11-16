@@ -1,4 +1,3 @@
-// this is the jest config for the backend-api package
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -20,5 +19,5 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/tests", "**/*.test.ts"]
+  "exclude": ["node_modules"]
 }
