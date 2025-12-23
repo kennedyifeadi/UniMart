@@ -1,6 +1,6 @@
 import { DynamicBackground } from "./DynamicBackground"
 import Bg from "../../assets/images/Aerial_view_in_University_of_Ibadan.jpg"
-import { Button } from "../button/Button"
+import { Button } from "../buttonb/Button"
 
 export const LandingPage = () => {
     return (

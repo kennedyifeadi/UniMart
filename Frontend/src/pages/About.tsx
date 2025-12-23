@@ -12,7 +12,7 @@ import { TeamCard } from "../components/about/TeamCard"
 import maleProfile from "../assets/images/MaleProfile.jpg"
 import FemaleProfile from "../assets/images/FemaleProfile.jpg"
 import { StudentCard } from "../components/about/StudentCard"
-import { Button } from "../components/button/Button"
+import { Button } from "../components/buttonb/Button"
 
 
 
