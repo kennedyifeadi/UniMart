@@ -11,20 +11,23 @@ export interface InputProps {
   required?: boolean
   value?: string
   defaultValue?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  // Optional custom validator: return a string message for invalid, or null/empty for valid
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  variant?: 'input' | 'textarea' | 'select'
+  options?: Array<{ value: string; label: string }>
   validate?: (value: string) => string | null
-  // Optional onBlur callback gives the computed error (if any)
-  onBlur?: (error: string | null, e: React.FocusEvent<HTMLInputElement>) => void
+  onBlur?: (error: string | null, e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  formikOnBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  prefix?: React.ReactNode
+  maxLength?: number
   className?: string
-  // Optional: for confirm password scenarios, supply the original password to compare with
   confirmWith?: string
   checked?: boolean
-  // Optional: for checkboxes to render label inline
   children?: React.ReactNode
+  externalError?: string | null
+  externalTouched?: boolean
 }
 
-export const Input = ({
+const Input = ({
   type = 'text',
   placeholder,
   name,
@@ -35,10 +38,17 @@ export const Input = ({
   onChange,
   validate,
   onBlur,
+  formikOnBlur,
   className = '',
   confirmWith,
   checked,
-  children
+  children,
+  externalError,
+  externalTouched,
+  variant = 'input',
+  options,
+  prefix,
+  maxLength,
 }: InputProps) => {
   const isControlled = typeof value === 'string'
   const [internalValue, setInternalValue] = useState<string>(defaultValue)
@@ -47,27 +57,26 @@ export const Input = ({
 
   const currentValue = isControlled ? (value as string) : internalValue
   const isCheckbox = type === 'checkbox'
+  const isTextarea = variant === 'textarea'
+  const isSelect = variant === 'select'
 
   const validateValue = useMemo(() => {
     return (val: string, isChecked?: boolean): string | null => {
-      // For checkboxes, validate based on checked state
       if (isCheckbox) {
         if (required && !isChecked) {
           return 'You must agree before submitting'
         }
         return null
       }
-      
+
       const trimmed = val?.toString().trim()
       if (required && !trimmed) {
         return 'This field is required'
       }
       if (validate) {
-        // If a custom validator is provided, use it
         const v = validate(trimmed)
         return v || null
       }
-      // Basic type-based checks via utils
       if (type === 'email' && trimmed) {
         return validateEmail(trimmed)
       }
@@ -81,37 +90,39 @@ export const Input = ({
     }
   }, [required, validate, type, confirmWith, isCheckbox])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (isCheckbox) {
-      // For checkboxes, re-validate on change to clear errors immediately
-      if (touched) {
-        const nextError = validateValue('', e.target.checked)
-        setError(nextError)
-        onBlur?.(nextError, e as unknown as React.FocusEvent<HTMLInputElement>)
-      }
+      const target = e.target as HTMLInputElement
+        if (touched) {
+          const nextError = validateValue('', target.checked)
+          setError(nextError)
+          onBlur?.(nextError, e as unknown as React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)
+        }
     } else {
-      if (!isControlled) setInternalValue(e.target.value)
+      if (!isControlled) setInternalValue((e.target as HTMLInputElement).value)
     }
     onChange?.(e)
   }
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTouched(true)
-    const nextError = isCheckbox 
-      ? validateValue('', e.target.checked)
-      : validateValue(currentValue)
+    const target = e.target as HTMLInputElement
+    const nextError = isCheckbox ? validateValue('', target.checked) : validateValue(currentValue)
     setError(nextError)
     onBlur?.(nextError, e)
+    formikOnBlur?.(e)
   }
 
   const baseClass = 'w-full border rounded-md px-3 py-2 outline-none transition-colors duration-150'
-  const stateClass = error && touched
+
+  const visibleError = externalTouched ? externalError : (error && touched ? error : null)
+
+  const stateClass = visibleError
     ? 'border-red-500 focus:ring-1 focus:ring-red-400'
     : 'border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-400'
 
-  const describedBy = error && touched ? `${name || 'input'}-error` : undefined
+  const describedBy = visibleError ? `${name || 'input'}-error` : undefined
 
-  // Checkbox render
   if (isCheckbox) {
     return (
       <div className="w-full">
@@ -121,8 +132,8 @@ export const Input = ({
             name={name}
             type="checkbox"
             checked={checked}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            onChange={handleChange as unknown as (e: React.ChangeEvent<HTMLInputElement>) => void}
+            onBlur={handleBlur as unknown as (e: React.FocusEvent<HTMLInputElement>) => void}
             className={`mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer ${className}`}
             aria-invalid={Boolean(error && touched)}
             aria-describedby={describedBy}
@@ -134,11 +145,10 @@ export const Input = ({
             </label>
           )}
         </div>
-        {/* Reserve space for error to prevent layout shift */}
         <div className="min-h-[20px]">
-          {error && touched && (
+          {visibleError && (
             <p id={describedBy} className="mt-1 text-xs text-red-600">
-              {error}
+              {visibleError}
             </p>
           )}
         </div>
@@ -146,7 +156,6 @@ export const Input = ({
     )
   }
 
-  // Regular input render
   return (
     <div className="w-full">
       {label && (
@@ -155,23 +164,86 @@ export const Input = ({
           {required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <input
-        id={name}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        className={`${baseClass} ${stateClass} ${className}`}
-        value={currentValue}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        aria-invalid={Boolean(error && touched)}
-        aria-describedby={describedBy}
-      />
-      {error && touched && (
+
+      <div className={`${prefix ? 'flex items-stretch gap-0' : ''}`}>
+        {prefix && (
+          <div className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-sm text-gray-700">
+            {prefix}
+          </div>
+        )}
+
+        {isTextarea ? (
+          <textarea
+            id={name}
+            name={name}
+            placeholder={placeholder}
+            className={`${baseClass} ${stateClass} ${prefix ? 'rounded-l-none' : ''} ${className}`}
+            value={currentValue}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              if (!isControlled) setInternalValue(e.target.value)
+              onChange?.(e as unknown as React.ChangeEvent<HTMLInputElement>)
+            }}
+            onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {
+              handleBlur(e as React.FocusEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>)
+            }}
+            aria-invalid={Boolean(visibleError)}
+            aria-describedby={describedBy}
+            maxLength={maxLength}
+          />
+        ) : isSelect ? (
+          <select
+            id={name}
+            name={name}
+            className={`${baseClass} ${stateClass} ${prefix ? 'rounded-l-none' : ''} ${className}`}
+            value={currentValue}
+            onChange={(e) => {
+              if (!isControlled) setInternalValue((e.target as HTMLSelectElement).value)
+              onChange?.(e as unknown as React.ChangeEvent<HTMLInputElement>)
+            }}
+            onBlur={(e) => handleBlur(e as React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)}
+            aria-invalid={Boolean(visibleError)}
+            aria-describedby={describedBy}
+          >
+            <option value="" disabled>
+              {placeholder || 'Select an option'}
+            </option>
+            {options?.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            id={name}
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            className={`${baseClass} ${stateClass} ${prefix ? 'rounded-l-none' : ''} ${className}`}
+            value={currentValue}
+            onChange={handleChange as unknown as (e: React.ChangeEvent<HTMLInputElement>) => void}
+            onBlur={handleBlur as unknown as (e: React.FocusEvent<HTMLInputElement>) => void}
+            aria-invalid={Boolean(visibleError)}
+            aria-describedby={describedBy}
+            maxLength={maxLength}
+          />
+        )}
+      </div>
+
+      {isTextarea && maxLength && (
+        <div className="flex justify-between mt-1 text-xs text-gray-500">
+          <div />
+          <div>{`${(currentValue || '').length}/${maxLength} characters`}</div>
+        </div>
+      )}
+
+      {visibleError && (
         <p id={describedBy} className="mt-1 text-xs text-red-600">
-          {error}
+          {visibleError}
         </p>
       )}
     </div>
   )
 }
+
+export default Input

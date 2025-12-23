@@ -6,6 +6,7 @@ import { MdOutlineVerifiedUser } from "react-icons/md";
 import { FaChartLine } from "react-icons/fa6";
 import { MdWhatsapp } from "react-icons/md";
 import { RiRocketLine } from "react-icons/ri";
+import CreateProfile from "../components/becomeAVendor/CreateProfile";
 
 
 
@@ -59,6 +60,10 @@ export const BecomeAVendor = () => {
             }
           </div>
         </div>
+      </div>
+      {/* create profile section */}
+      <div className="bg-[#f3f6fb] flex justify-center">
+        <CreateProfile />
       </div>
     </div>
   )
