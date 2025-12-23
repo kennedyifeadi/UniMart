@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AiFillStar } from 'react-icons/ai'
 import { MdOutlineVerifiedUser } from "react-icons/md";
 import type { IVendor } from '../../types/vendor'
+import trackEvent from '../../lib/analytics'
 
 interface Props {
   vendor: IVendor
@@ -39,12 +40,19 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
         <div className="mt-3 text-xs text-gray-500">Faculty: {vendor.faculty}</div>
 
         <div className="mt-4 flex flex-col gap-3">
-          <Link to={`/vendors/${vendor.id}`} className="flex-1 text-center py-2 rounded-md bg-[#2563eb] text-white font-medium">View Profile</Link>
+          <Link
+            to={`/vendors/${vendor.id}`}
+            className="flex-1 text-center py-2 rounded-md bg-[#2563eb] text-white font-medium"
+            onClick={() => trackEvent('vendor_view_profile', { vendorId: vendor.id, businessName: vendor.businessName, category: vendor.category })}
+          >
+            View Profile
+          </Link>
           <a
             href={`https://wa.me/${vendor.phoneNumber}`}
             target="_blank"
             rel="noreferrer"
             className="flex-1 text-center py-2 rounded-md bg-[#22c55e] text-white font-medium"
+            onClick={() => trackEvent('vendor_contact_whatsapp', { vendorId: vendor.id, phone: vendor.phoneNumber })}
           >
             Contact via WhatsApp
           </a>

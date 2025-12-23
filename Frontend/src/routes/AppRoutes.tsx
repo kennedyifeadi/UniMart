@@ -6,6 +6,7 @@ import SignUp from "../pages/SignUp"
 import Vendors from "../pages/Vendors"
 import NotFound from "../pages/NotFound"
 import BecomeAVendor from "../pages/BecomeAVendor"
+import Artisan from '../features/artisan/artisan'
 import withMainLayout from '../layouts/WithMainLayout'
 
 
@@ -15,6 +16,7 @@ export const AppRoutes = () => {
   // const LoginWithLayout = withMainLayout(Login);
   // const SignUpWithLayout = withMainLayout(SignUp);
   const VendorsWithLayout = withMainLayout(Vendors);
+  const ArtisanWithLayout = withMainLayout(Artisan);
   const BecomeAVendorWithLayout = withMainLayout(BecomeAVendor);
   const NotFoundWithLayout = withMainLayout(NotFound);
   return (
@@ -26,6 +28,7 @@ export const AppRoutes = () => {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/becomeavendor" element={<BecomeAVendorWithLayout />} />
       <Route path="/vendors" element={<VendorsWithLayout />} />
+      <Route path="/vendors/:id" element={<ArtisanWithLayout />} />
       <Route path="*" element={<NotFoundWithLayout />} />
     </Routes>
     </>

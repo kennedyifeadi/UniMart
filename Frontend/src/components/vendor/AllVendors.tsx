@@ -5,145 +5,23 @@ import { HiSearch } from 'react-icons/hi'
 import { MdOutlineVerifiedUser } from "react-icons/md";
 import type { IVendor } from '../../types/vendor'
 import { AiFillStar } from 'react-icons/ai'
-import fashion from '../../assets/images/Fashion_Unimart.jpg'
-import food from '../../assets/images/Food_Unimart.jpg'
-import electronics from '../../assets/images/Electronics_Unimart.jpg'
-import education from '../../assets/images/Education_Unimart.jpg'
+import { MOCK_VENDORS as DUMMY_VENDOR_PROFILES } from '../../dummydata'
 
 
-// Mock data
-const MOCK_VENDORS: IVendor[] = [
-  {
-    id: 'v1',
-    businessName: "Aunty's Kitchen",
-    description: 'Homemade Nigerian meals and jollof rice. Fresh and delicious.',
-    category: 'Food',
-    subcategory: 'Nigerian Cuisine',
-    rating: 4.6,
-    reviewCount: 124,
-    imageUrl: food,
-    isVerified: true,
-    phoneNumber: '2348123456789',
-    faculty: 'Engineering'
-  },
-  {
-    id: 'v2',
-    businessName: 'Campus Threads',
-    description: 'Stylish custom tees and hoodies for students.',
-    category: 'Fashion',
-    subcategory: 'Apparel',
-    rating: 4.2,
-    reviewCount: 48,
-    imageUrl: fashion,
-    isVerified: false,
-    phoneNumber: '2347012345678',
-    faculty: 'Arts'
-  },
-  {
-    id: 'v3',
-    businessName: 'Gadget Fixers',
-    description: 'Phone and laptop repairs with quick turnaround.',
-    category: 'Services',
-    subcategory: 'Repairs',
-    rating: 4.8,
-    reviewCount: 200,
-    imageUrl: electronics,
-    isVerified: true,
-    phoneNumber: '2348035550001',
-    faculty: 'Sciences'
-  },
-  {
-    id: 'v4',
-    businessName: 'Sweet Bakes',
-    description: 'Cakes and pastries made to order for events and parties.',
-    category: 'Food',
-    subcategory: 'Bakery',
-    rating: 3.9,
-    reviewCount: 18,
-    imageUrl: food,
-    isVerified: false,
-    phoneNumber: '2348029991112',
-    faculty: 'Management'
-  },
-  {
-    id: 'v5',
-    businessName: 'PrintLab',
-    description: 'Affordable printing, flyers, and banners for campus events.',
-    category: 'Services',
-    subcategory: 'Printing',
-    rating: 4.1,
-    reviewCount: 34,
-    imageUrl: electronics,
-    isVerified: false,
-    phoneNumber: '2348091112233',
-    faculty: 'Law'
-  },
-  {
-    id: 'v6',
-    businessName: 'Spice Route',
-    description: 'Authentic street food and spicy delights.',
-    category: 'Food',
-    subcategory: 'Street Food',
-    rating: 4.5,
-    reviewCount: 78,
-    imageUrl: food,
-    isVerified: true,
-    phoneNumber: '2348064443322',
-    faculty: 'Science'
-  },
-  {
-    id: 'v7',
-    businessName: 'DesignHub',
-    description: 'Graphic design and branding for student startups.',
-    category: 'Services',
-    subcategory: 'Design',
-    rating: 4.0,
-    reviewCount: 12,
-    imageUrl: electronics,
-    isVerified: false,
-    phoneNumber: '2348087774455',
-    faculty: 'Engineering'
-  },
-  {
-    id: 'v8',
-    businessName: 'Vintage Vibes',
-    description: 'Pre-loved vintage clothes and accessories.',
-    category: 'Fashion',
-    subcategory: 'Vintage',
-    rating: 4.7,
-    reviewCount: 64,
-    imageUrl: fashion,
-    isVerified: true,
-    phoneNumber: '2348052227788',
-    faculty: 'Arts'
-  },
-  {
-    id: 'v9',
-    businessName: 'QuickFix Tutors',
-    description: 'Private tutoring for university courses.',
-    category: 'Services',
-    subcategory: 'Tutoring',
-    rating: 3.8,
-    reviewCount: 9,
-    imageUrl: education,
-    isVerified: false,
-    phoneNumber: '2348143332211',
-    faculty: 'Education'
-  },
-  {
-    id: 'v10',
-    businessName: 'Campus Coffee',
-    description: 'Fresh brewed coffee and snacks to keep you going.',
-    category: 'Food',
-    subcategory: 'Cafe',
-    rating: 4.3,
-    reviewCount: 90,
-    imageUrl: food,
-    isVerified: true,
-    phoneNumber: '2348120001110',
-    faculty: 'Management'
-  }
-]
+// map dummy vendor profiles to the listing shape expected by this component
+const MOCK_VENDORS: IVendor[] = DUMMY_VENDOR_PROFILES.map((p) => ({
+  id: p.id,
+  businessName: p.businessName,
+  description: p.description,
+  category: p.category,
+  subcategory: p.subcategory,
+  rating: p.rating,
+  reviewCount: p.reviewCount,
+  imageUrl: p.profilePictureUrl || p.backdropPictureUrl,
+  isVerified: p.isVerified,
+  phoneNumber: p.whatsappNumber,
+  faculty: p.faculty
+}))
 
 const fetchVendors = async (): Promise<IVendor[]> => {
   // simulate network delay
@@ -181,7 +59,7 @@ const AllVendors: React.FC = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <aside className="w-full md:w-1/4">
-          <div className="bg-white rounded-xl border-gray-200 border-[2px] p-4 sticky top-6">
+          <div className="bg-white rounded-xl border-gray-200 border-[2px] p-4 sticky top-20">
             <div className="relative mb-4">
               <HiSearch className="absolute left-3 top-3 text-gray-400" />
               <input
