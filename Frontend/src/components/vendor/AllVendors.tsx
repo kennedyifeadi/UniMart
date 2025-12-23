@@ -2,8 +2,14 @@ import React, { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import VendorCard from './VendorCard'
 import { HiSearch } from 'react-icons/hi'
-import { HiShieldCheck } from 'react-icons/hi'
+import { MdOutlineVerifiedUser } from "react-icons/md";
 import type { IVendor } from '../../types/vendor'
+import { AiFillStar } from 'react-icons/ai'
+import fashion from '../../assets/images/Fashion_Unimart.jpg'
+import food from '../../assets/images/Food_Unimart.jpg'
+import electronics from '../../assets/images/Electronics_Unimart.jpg'
+import education from '../../assets/images/Education_Unimart.jpg'
+
 
 // Mock data
 const MOCK_VENDORS: IVendor[] = [
@@ -15,7 +21,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Nigerian Cuisine',
     rating: 4.6,
     reviewCount: 124,
-    imageUrl: '/images/vendors/food1.jpg',
+    imageUrl: food,
     isVerified: true,
     phoneNumber: '2348123456789',
     faculty: 'Engineering'
@@ -28,7 +34,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Apparel',
     rating: 4.2,
     reviewCount: 48,
-    imageUrl: '/images/vendors/fashion1.jpg',
+    imageUrl: fashion,
     isVerified: false,
     phoneNumber: '2347012345678',
     faculty: 'Arts'
@@ -41,7 +47,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Repairs',
     rating: 4.8,
     reviewCount: 200,
-    imageUrl: '/images/vendors/service1.jpg',
+    imageUrl: electronics,
     isVerified: true,
     phoneNumber: '2348035550001',
     faculty: 'Sciences'
@@ -54,7 +60,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Bakery',
     rating: 3.9,
     reviewCount: 18,
-    imageUrl: '/images/vendors/food2.jpg',
+    imageUrl: food,
     isVerified: false,
     phoneNumber: '2348029991112',
     faculty: 'Management'
@@ -67,7 +73,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Printing',
     rating: 4.1,
     reviewCount: 34,
-    imageUrl: '/images/vendors/service2.jpg',
+    imageUrl: electronics,
     isVerified: false,
     phoneNumber: '2348091112233',
     faculty: 'Law'
@@ -80,7 +86,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Street Food',
     rating: 4.5,
     reviewCount: 78,
-    imageUrl: '/images/vendors/food3.jpg',
+    imageUrl: food,
     isVerified: true,
     phoneNumber: '2348064443322',
     faculty: 'Science'
@@ -93,7 +99,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Design',
     rating: 4.0,
     reviewCount: 12,
-    imageUrl: '/images/vendors/service3.jpg',
+    imageUrl: electronics,
     isVerified: false,
     phoneNumber: '2348087774455',
     faculty: 'Engineering'
@@ -106,7 +112,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Vintage',
     rating: 4.7,
     reviewCount: 64,
-    imageUrl: '/images/vendors/fashion2.jpg',
+    imageUrl: fashion,
     isVerified: true,
     phoneNumber: '2348052227788',
     faculty: 'Arts'
@@ -119,7 +125,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Tutoring',
     rating: 3.8,
     reviewCount: 9,
-    imageUrl: '/images/vendors/service4.jpg',
+    imageUrl: education,
     isVerified: false,
     phoneNumber: '2348143332211',
     faculty: 'Education'
@@ -132,7 +138,7 @@ const MOCK_VENDORS: IVendor[] = [
     subcategory: 'Cafe',
     rating: 4.3,
     reviewCount: 90,
-    imageUrl: '/images/vendors/food4.jpg',
+    imageUrl: food,
     isVerified: true,
     phoneNumber: '2348120001110',
     faculty: 'Management'
@@ -175,27 +181,27 @@ const AllVendors: React.FC = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <aside className="w-full md:w-1/4">
-          <div className="bg-white rounded-xl border p-4 sticky top-6">
+          <div className="bg-white rounded-xl border-gray-200 border-[2px] p-4 sticky top-6">
             <div className="relative mb-4">
               <HiSearch className="absolute left-3 top-3 text-gray-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search vendors"
-                className="pl-10 pr-3 py-2 w-full border rounded-md"
+                className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md"
               />
             </div>
 
             <div className="mb-4">
-              <h4 className="text-sm font-medium mb-2">Categories</h4>
-              <div className="flex flex-wrap gap-2">
+              <h4 className="text-md font-medium mb-4">Categories</h4>
+              <div className="flex flex-col gap-2">
                 {CATEGORIES.map((c) => {
                   const active = c === category
                   return (
                     <button
                       key={c}
                       onClick={() => setCategory(c)}
-                      className={`text-sm px-3 py-1 rounded-full ${active ? 'bg-blue-100 text-[#2563eb]' : 'text-gray-700'}`}
+                      className={`text-sm text-start px-3 py-2 rounded-sm ${active ? 'bg-blue-100 text-[#2563eb] font-medium' : 'text-gray-700'}`}
                     >
                       {c}
                     </button>
@@ -205,31 +211,34 @@ const AllVendors: React.FC = () => {
             </div>
 
             <div className="mb-4">
-              <h4 className="text-sm font-medium mb-2">Ratings</h4>
+              <h4 className="text-md font-medium mb-4">Ratings</h4>
               <div className="flex flex-col gap-2">
                 {RATING_OPTIONS.map((r) => (
                   <button
                     key={r}
                     onClick={() => setRatingFilter(r)}
-                    className={`text-sm text-left px-2 ${ratingFilter === r ? 'text-[#2563eb] font-medium' : 'text-gray-700'}`}
+                    className={`text-sm flex items-center py-2 text-left px-2 ${ratingFilter === r ? 'text-[#2563eb] font-medium' : 'text-gray-700'}`}
                   >
-                    {r}
+                   {r === '4+' && <AiFillStar className="inline text-yellow-400 mr-1" />} {r} stars
                   </button>
                 ))}
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)} />
-                <span className="flex items-center gap-2"><HiShieldCheck className="text-green-600" /> Show only UI Verified vendors</span>
+              <h4 className="text-md font-medium mb-4">Verification</h4>
+              <label className="flex items-center gap-2 text-md text-gray-700">
+                <input type="checkbox" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)}  />
+                <span className="flex items-center gap-2"> Show only UI Verified vendors <MdOutlineVerifiedUser className="text-green-600" /></span>
               </label>
             </div>
 
-            <div className="mt-4">
+            {/* dummy div */}
+            <div className='w-full h-[1px] mt-6 rounded-full bg-gray-300'></div>
+            <div className="mt-8">
               <button
                 onClick={() => { setSearch(''); setCategory('All'); setRatingFilter('All'); setVerifiedOnly(false) }}
-                className="w-full py-2 rounded-md border text-sm"
+                className="w-full py-2 rounded-md border border-gray-300 text-sm"
               >
                 Clear All Filters
               </button>

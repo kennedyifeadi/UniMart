@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { AiFillStar } from 'react-icons/ai'
-import { HiShieldCheck } from 'react-icons/hi'
+import { MdOutlineVerifiedUser } from "react-icons/md";
 import type { IVendor } from '../../types/vendor'
 
 interface Props {
@@ -10,12 +10,12 @@ interface Props {
 
 const VendorCard: React.FC<Props> = ({ vendor }) => {
   return (
-    <article className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-0 overflow-hidden flex flex-col">
-      <div className="relative h-40 w-full bg-gray-100">
-        <img src={vendor.imageUrl} alt={vendor.businessName} className="object-cover w-full h-full" />
+    <article className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-0 overflow-hidden flex flex-col group">
+      <div className="relative h-48 w-full bg-gray-100">
+        <img src={vendor.imageUrl} alt={vendor.businessName} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300 ease-in-out" />
         {vendor.isVerified && (
           <div className="absolute top-3 right-3 bg-green-50 text-green-700 text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
-            <HiShieldCheck className="w-4 h-4 text-green-600" />
+            <MdOutlineVerifiedUser className="w-4 h-4 text-green-600" />
             UI Verified
           </div>
         )}
@@ -38,7 +38,7 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
 
         <div className="mt-3 text-xs text-gray-500">Faculty: {vendor.faculty}</div>
 
-        <div className="mt-4 flex gap-3">
+        <div className="mt-4 flex flex-col gap-3">
           <Link to={`/vendors/${vendor.id}`} className="flex-1 text-center py-2 rounded-md bg-[#2563eb] text-white font-medium">View Profile</Link>
           <a
             href={`https://wa.me/${vendor.phoneNumber}`}
