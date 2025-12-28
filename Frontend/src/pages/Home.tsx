@@ -13,7 +13,26 @@ import { Carousel } from '../components/carousel/Carousel'
 import { LandingPage } from '../components/home/LandingPage'
 import { Heading1 } from '../components/headings/Heading1'
 import { Heading3 } from '../components/headings/Heading3'
+import { useEffect, useState } from 'react'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '../firebase/config'
 
+
+type VendorDoc = {
+  id: string
+  category?: string
+  categoryName?: string
+  images?: {
+    backdrop?: string
+    profile?: string
+  }
+  businessName?: string
+  businessTitle?: string
+  businessDescription?: string
+  description?: string
+  ownerUid?: string
+  isVerified?: boolean
+}
 
 const Home = () => {
   const testimonialsCardDetails: TestimonialsCardProps[] = [
@@ -46,40 +65,47 @@ const Home = () => {
       faculty: 'Faculty of Business',
     }
   ]
-  const featuredVendors: FeaturedVendorsCardProps[] = [
-    {
-      name: "Sarah's Snack Hub",
-      description: 'Healthy snacks and fresh meals for busy students',
-      link: 'vendor1.com',
-      category: 'food',
-      verified: true,
-      image: food
-    },
-    {
-      name: 'Tech Repair Pro',
-      description: 'Fast and reliable phone & laptop repairs',
-      link: 'vendor2.com',
-      category: 'electronics',
-      verified: false,
-      image: electronics
-    },
-    {
-      name: 'Campus Threads ',
-      description: 'Trendy fashion for the modern student',
-      link: 'vendor3.com',
-      category: 'fashion',
-      verified: true,
-      image: fashion
-    },
-    {
-      name: 'Study Buddy Tutoring',
-      description: 'Personalized tutoring for all subjects',
-      link: 'vendor4.com',
-      category: 'education',
-      verified: false,
-      image: education
+  const [featuredVendors, setFeaturedVendors] = useState<FeaturedVendorsCardProps[]>([])
+  const [loadingFeatured, setLoadingFeatured] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+    async function loadFeatured() {
+      try {
+        const snap = await getDocs(collection(db, 'vendors'))
+        const items = snap.docs.map(d => ({ ...(d.data() as VendorDoc), id: d.id }))
+
+        // shuffle array
+        for (let i = items.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[items[i], items[j]] = [items[j], items[i]]
+        }
+
+        const picked = items.slice(0, 4).map((v: VendorDoc) => {
+          const cat = (v.category || v.categoryName || 'Services').toString()
+          const image = v.images?.backdrop || v.images?.profile || (cat.toLowerCase().includes('food') ? food : cat.toLowerCase().includes('fashion') ? fashion : cat.toLowerCase().includes('tech') || cat.toLowerCase().includes('technology') ? electronics : education)
+          return {
+            name: v.businessName || v.businessTitle || 'Vendor',
+            description: v.businessDescription ?? v.description ?? '',
+            link: `/vendors/${v.ownerUid ?? v.id}`,
+            category: (v.category ?? '').toString().toLowerCase(),
+            verified: !!v.isVerified,
+            image,
+          } as FeaturedVendorsCardProps
+        })
+
+        if (mounted) {
+          setFeaturedVendors(picked)
+          setLoadingFeatured(false)
+        }
+      } catch (err) {
+        console.error('Failed to load featured vendors', err)
+        if (mounted) setLoadingFeatured(false)
+      }
     }
-  ]
+    loadFeatured()
+    return () => { mounted = false }
+  }, [])
 
   const trustCardDetails: TrustCardProps[] = [
     {
@@ -118,17 +144,41 @@ const Home = () => {
         <Heading3>Discover amazing businesses run by your fellow students</Heading3>
         {/* Mobile Carousel View */}
         <div className='md:hidden w-[90%] mt-16'>
-          <Carousel autoPlayInterval={0}>
-            {featuredVendors.map((vendor, index) => (
-              <FeaturedVendorsCard key={index} {...vendor} />
-            ))}
-          </Carousel>
+          {loadingFeatured ? (
+            <Carousel autoPlayInterval={0}>
+              {[1, 2, 3].map((i) => (
+                <div key={i} className='w-full h-48 bg-gray-100 rounded-lg p-4 flex-shrink-0 flex items-center justify-center'>
+                  <div className='animate-pulse w-full h-full flex items-center justify-center'>
+                    <div className='w-3/4 h-3/4 bg-gray-200 rounded' />
+                  </div>
+                </div>
+              ))}
+            </Carousel>
+          ) : (
+            <Carousel autoPlayInterval={0}>
+              {featuredVendors.map((vendor, index) => (
+                <FeaturedVendorsCard key={index} {...vendor} />
+              ))}
+            </Carousel>
+          )}
         </div>
         {/* Desktop Grid View */}
         <div className='hidden md:flex flex-wrap justify-around w-[90%] mt-16'>
-          {featuredVendors.map((vendor, index) => (
-            <FeaturedVendorsCard key={index} {...vendor} />
-          ))}
+          {loadingFeatured ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className='w-[23%] h-56 bg-gray-100 rounded-lg p-4 m-2'>
+                <div className='animate-pulse h-full w-full flex flex-col gap-3'>
+                  <div className='bg-gray-200 h-32 rounded' />
+                  <div className='bg-gray-200 h-4 rounded w-3/4' />
+                  <div className='bg-gray-200 h-4 rounded w-1/2' />
+                </div>
+              </div>
+            ))
+          ) : (
+            featuredVendors.map((vendor, index) => (
+              <FeaturedVendorsCard key={index} {...vendor} />
+            ))
+          )}
         </div>
       </div>
       <div className='p-4 py-10 md:py-16 flex flex-col items-center bg-[#f9fafb]'>

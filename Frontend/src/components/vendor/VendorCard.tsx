@@ -56,7 +56,7 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
         <div className="mt-4 flex flex-col gap-3">
           <button
             className="flex-1 text-center py-2 rounded-md bg-[#2563eb] text-white font-medium"
-            onClick={() => { trackEvent('vendor_view_profile', { vendorId: vendor.id, businessName: vendor.businessName, category: vendor.category }); trackVendorVisit(vendor.id, vendor.businessName); navigate(`/vendors/${vendor.id}`) }}
+            onClick={() => { trackEvent('vendor_view_profile', { vendorId: vendor.id, businessName: vendor.businessName, category: vendor.category }); trackVendorVisit(vendor.id, vendor.businessName); navigate(`/vendors/${vendor.id}`, { state: { vendor } }) }}
           >
             View Profile
           </button>

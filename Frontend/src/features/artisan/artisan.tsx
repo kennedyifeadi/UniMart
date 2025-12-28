@@ -1,33 +1,104 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { MOCK_VENDORS } from '../../dummydata'
 import type { IVendorProfile } from '../../dummydata'
 import { ShieldCheck, Star, ArrowRight, MapPin } from 'lucide-react'
 import { AiFillStar, AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
 import { HiShieldCheck } from 'react-icons/hi'
-// removed unused AiOutlineCheck
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../../firebase/config'
 
 const Artisan: React.FC = () => {
   const { id } = useParams<{ id: string }>()
+  const location = useLocation()
   const [vendor, setVendor] = useState<IVendorProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setLoading(true)
-    const v = MOCK_VENDORS.find((x) => x.id === id) ?? null
-    // simulate async load
-    const t = setTimeout(() => {
-      setVendor(v)
+
+    const stateVendor = (location.state as { vendor?: IVendorProfile } | undefined)?.vendor
+    if (stateVendor) {
+      setVendor(stateVendor)
       setLoading(false)
-    }, 250)
-    // track page view (after vendor loaded)
-    if (v) {
       import('../../lib/analytics').then(({ trackEvent }) => {
-        trackEvent('vendor_profile_page_view', { vendorId: v.id, businessName: v.businessName })
+        trackEvent('vendor_profile_page_view', { vendorId: stateVendor.id, businessName: stateVendor.businessName })
       })
+      return
     }
-    return () => clearTimeout(t)
-  }, [id])
+
+    const load = async () => {
+      const vFromMock = MOCK_VENDORS.find((x) => x.id === id) ?? null
+      if (vFromMock) {
+        setVendor(vFromMock)
+        setLoading(false)
+        import('../../lib/analytics').then(({ trackEvent }) => {
+          trackEvent('vendor_profile_page_view', { vendorId: vFromMock.id, businessName: vFromMock.businessName })
+        })
+        return
+      }
+
+      if (!id) {
+        setVendor(null)
+        setLoading(false)
+        return
+      }
+
+      try {
+        const docRef = doc(db, 'vendors', id)
+        const snap = await getDoc(docRef)
+        if (snap.exists()) {
+          const data = snap.data() as Partial<IVendorProfile>
+
+          // helper to safely read string props (avoids using `any`)
+          const getString = (obj: Record<string, unknown> | Partial<IVendorProfile> | undefined, keys: string[], fallback = ''): string => {
+            if (!obj || typeof obj !== 'object') return fallback
+            for (const k of keys) {
+              const val = (obj as Record<string, unknown>)[k]
+              if (typeof val === 'string' && val.length) return val
+            }
+            return fallback
+          }
+
+          // safely extract nested images object
+          const images = (data as Record<string, unknown>)['images']
+          const profileFromImages = images && typeof images === 'object' ? (images as Record<string, unknown>)['profile'] : undefined
+          const backdropFromImages = images && typeof images === 'object' ? (images as Record<string, unknown>)['backdrop'] : undefined
+
+          const v = {
+            id: snap.id,
+            businessName: getString(data, ['businessName', 'businessTitle'], 'Vendor'),
+            description: getString(data, ['businessDescription', 'description'], ''),
+            category: getString(data, ['category', 'categoryName'], 'Others'),
+            subcategory: getString(data, ['subcategory'], ''),
+            rating: typeof data.rating === 'number' ? data.rating : 0,
+            reviewCount: typeof data.reviewCount === 'number' ? data.reviewCount : 0,
+            profilePictureUrl: typeof profileFromImages === 'string' ? profileFromImages : getString(data, ['profilePictureUrl'], ''),
+            backdropPictureUrl: typeof backdropFromImages === 'string' ? backdropFromImages : getString(data, ['backdropPictureUrl'], ''),
+            isVerified: !!data.isVerified,
+            whatsappNumber: getString(data, ['whatsappNumber', 'phoneNumber'], ''),
+            offerings: Array.isArray(data.offerings) ? data.offerings : [],
+            reviews: Array.isArray(data.reviews) ? data.reviews : [],
+            faculty: getString(data, ['faculty'], ''),
+            location: getString(data, ['location'], ''),
+            responseTime: getString(data, ['responseTime'], ''),
+          } as IVendorProfile
+          setVendor(v)
+          import('../../lib/analytics').then(({ trackEvent }) => {
+            trackEvent('vendor_profile_page_view', { vendorId: v.id, businessName: v.businessName })
+          })
+        } else {
+          setVendor(null)
+        }
+      } catch {
+        setVendor(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
+  }, [id, location])
 
   if (loading) return <div className="p-8 text-center">Loading...</div>
   if (!vendor) return <div className="p-8 text-center">Vendor not found</div>
@@ -47,7 +118,7 @@ const Artisan: React.FC = () => {
           <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block bg-blue-50 text-[#2563eb] px-2 py-0.5 rounded-md text-sm">{vendor.category} → {vendor.subcategory}</span>
-                  {vendor.isVerified && (
+              {vendor.isVerified && (
                 <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-0.5 rounded-md text-sm">
                   <ShieldCheck className="w-4 h-4 text-green-600" /> UI Verified
                 </span>
@@ -80,8 +151,8 @@ const Artisan: React.FC = () => {
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-3">What We Offer</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {vendor.offerings.map((it) => (
-                  <div key={it} className="flex items-center gap-2 text-sm text-gray-700">
+              {(vendor.offerings ?? []).map((it) => (
+                <div key={it} className="flex items-center gap-2 text-sm text-gray-700">
                   <ArrowRight className="text-[#2563eb]" />
                   <span>{it}</span>
                 </div>
@@ -91,11 +162,11 @@ const Artisan: React.FC = () => {
 
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-3">Customer Reviews</h3>
-            {vendor.reviews.length ? (
+            {(vendor.reviews ?? []).length ? (
               <div className="space-y-4">
                 {/* show first review */}
                 {(() => {
-                  const r = vendor.reviews[0]
+                  const r = (vendor.reviews ?? [])[0]
                   return (
                     <div key={r.id} className="flex gap-4">
                       <div className="w-12 h-12 rounded-full bg-[#f3f4f6] flex items-center justify-center text-gray-700 font-medium">{r.customerName.charAt(0)}</div>
@@ -127,7 +198,7 @@ const Artisan: React.FC = () => {
                     </div>
                     <button className="p-2 rounded-md bg-gray-100"><AiOutlineArrowRight /></button>
                   </div>
-                  <div className="text-sm text-gray-500">Showing 1 of {vendor.reviews.length}</div>
+                  <div className="text-sm text-gray-500">Showing 1 of {(vendor.reviews ?? []).length}</div>
                 </div>
               </div>
             ) : (
