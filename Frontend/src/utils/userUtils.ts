@@ -5,7 +5,9 @@ export function getInitials(fullName: string): string {
   return (parts[0][0] + (parts[1][0] ?? '')).toUpperCase()
 }
 
-export function calculateCompletion(user: any): number {
+import type { IUser } from '../types'
+
+export function calculateCompletion(user: Partial<IUser & { fullName?: string; faculty?: string; avatarUrl?: string }> | null | undefined): number {
   let score = 0
   // Base: name + email
   if (user?.fullName && user?.email) score += 30

@@ -69,7 +69,7 @@ export const NavBar = () => {
         <span className="ml-4 cursor-pointer" onClick={() => dispatch(toggleModal())}>
           {currentUser ? (
             <div className="bg-[#2563eb] text-white rounded-full w-8 h-8 flex items-center justify-center font-medium">
-              {getInitials(currentUser.displayName ?? (currentUser.fullName as any), currentUser.email as any)}
+              {getInitials(currentUser.displayName ?? (currentUser.fullName as string | undefined), currentUser.email ?? undefined)}
             </div>
           ) : (
               <span className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">

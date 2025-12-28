@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LogIn } from 'lucide-react'
 import { useState } from 'react'
 import { loginWithGoogle, loginUser } from '../store/slices/authSlice'
+import type { FirestoreProfile } from '../types'
 import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '../store/store'
 
@@ -26,7 +27,8 @@ const Login = () => {
     try {
       const payload = await dispatch(loginUser({ email: values.email, password: values.password })).unwrap()
       setSuccess('Signed in successfully')
-      const role = (payload as any)?.profile?.role ?? ((payload as any)?.profile?.isVendor ? 'vendor' : 'user')
+      const profile = (payload as { profile?: FirestoreProfile })?.profile
+      const role = profile?.role ?? (profile?.isVendor ? 'vendor' : 'user')
       setTimeout(() => navigate(role === 'vendor' ? '/vendor/dashboard' : '/dashboard'), 700)
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -44,7 +46,8 @@ const Login = () => {
     setLoading(true)
     try {
       const payload = await dispatch(loginWithGoogle()).unwrap()
-      const role = (payload as any)?.profile?.role ?? ((payload as any)?.profile?.isVendor ? 'vendor' : 'user')
+      const profile = (payload as { profile?: FirestoreProfile })?.profile
+      const role = profile?.role ?? (profile?.isVendor ? 'vendor' : 'user')
       navigate(role === 'vendor' ? '/vendor/dashboard' : '/dashboard')
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -106,7 +109,7 @@ const Login = () => {
                 )}
               </Field>
 
-              <button type="submit" className="mt-4 w-full py-2 rounded-md text-white bg-[#2563eb] flex items-center justify-center" disabled={loading}>
+              <button type="submit" className="mt-4 w-full py-2 rounded-md text-white bg-[#2563eb] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled={loading}>
                 {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Log In'}
               </button>
             </Form>

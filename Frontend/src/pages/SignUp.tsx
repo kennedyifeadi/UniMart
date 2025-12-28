@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '../store/store'
 import { registerUser, loginWithGoogle } from '../store/slices/authSlice'
+import type { FirestoreProfile } from '../types'
 
 const initialValues: SignUpFormValues = { name: '', email: '', password: '', confirmPassword: '', terms: false }
 
@@ -25,7 +26,8 @@ const SignUp = () => {
     try {
       const payload = await dispatch(registerUser({ email: values.email, password: values.password, fullName: values.name })).unwrap()
       setSuccess('Account created successfully')
-      const role = (payload as any)?.profile?.role ?? ((payload as any)?.profile?.isVendor ? 'vendor' : 'user')
+      const profile = (payload as { profile?: FirestoreProfile } )?.profile
+      const role = profile?.role ?? (profile?.isVendor ? 'vendor' : 'user')
       setTimeout(() => navigate(role === 'vendor' ? '/vendor/dashboard' : '/dashboard'), 700)
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Registration failed'
@@ -40,7 +42,8 @@ const SignUp = () => {
     setLoading(true)
     try {
       const payload = await dispatch(loginWithGoogle()).unwrap()
-      const role = (payload as any)?.profile?.role ?? ((payload as any)?.profile?.isVendor ? 'vendor' : 'user')
+      const profile = (payload as { profile?: FirestoreProfile } )?.profile
+      const role = profile?.role ?? (profile?.isVendor ? 'vendor' : 'user')
       navigate(role === 'vendor' ? '/vendor/dashboard' : '/dashboard')
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Google sign-in failed'
@@ -153,7 +156,7 @@ const SignUp = () => {
                 </Field>
               </div>
 
-              <button type="submit" className="w-full py-2 rounded text-white bg-[#2563eb] flex items-center justify-center" disabled={loading}>
+              <button type="submit" className="w-full py-2 rounded text-white bg-[#2563eb] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled={loading}>
                 {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Create account'}
               </button>
             </Form>

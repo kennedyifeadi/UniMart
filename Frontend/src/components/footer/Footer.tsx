@@ -32,26 +32,26 @@ export const Footer = () => {
     },
     {
       title: "Become a Vendor",
-      link: "/become-a-vendor"
+      link: "/becomeavendor"
     },
     {
       title: "Contact Us",
-      link: "/contact"
+      link: "#"
     }
   ]
 
   const legalLinks = [
     {
       title: "Privacy Policy",
-      link: "/"
+      link: "/privacy"
     },
     {
       title: "Terms of Service",
-      link: "/"
+      link: "/terms"
     },
     {
       title: "Cookie Policy",
-      link: "/"
+      link: "/cookies"
     },
   ]
   return (

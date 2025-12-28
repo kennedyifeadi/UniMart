@@ -416,7 +416,7 @@ const EditVendorProfile = () => {
 
                     <div className="mt-6 flex justify-end gap-3">
                         <button onClick={() => navigate('/vendor/dashboard')} className="px-4 py-2 border rounded">Cancel</button>
-                        <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded">{saving ? 'Saving...' : 'Save Changes'}</button>
+                        <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed">{saving ? 'Saving...' : 'Save Changes'}</button>
                     </div>
                 </div>
             </div>

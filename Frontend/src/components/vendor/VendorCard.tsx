@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Star, Heart, CheckCircle } from 'lucide-react'
-import type { IVendor } from '../../types/vendor'
+import type { IVendor } from '../../types'
 import trackEvent from '../../lib/analytics'
 import useUserInteractions from '../../hooks/useUserInteractions'
 import { useSelector } from 'react-redux'
@@ -20,7 +20,7 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
   return (
     <article className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-0 overflow-hidden flex flex-col group">
       <div className="relative h-48 w-full bg-gray-100">
-        <img src={vendor.imageUrl} alt={vendor.businessName} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300 ease-in-out" />
+        <img loading="lazy" src={vendor.imageUrl} alt={vendor.businessName} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300 ease-in-out" />
           <button
           onClick={(e) => { e.stopPropagation(); e.preventDefault(); toggleFavorite(vendor.id) }}
           className={`absolute top-3 right-3 p-2 rounded-full text-white ${isFav ? 'bg-red-500' : 'bg-white/70 text-gray-800'}`}
@@ -45,7 +45,7 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
 
         <div className="flex items-center text-sm text-gray-500 mt-1 mb-2">
           <Star className="text-yellow-400 mr-1" />
-          <span className="mr-2">{vendor.rating.toFixed(1)}</span>
+          <span className="mr-2">{(vendor.rating ?? 0).toFixed(1)}</span>
           <span className="text-xs">({vendor.reviewCount} reviews)</span>
         </div>
 

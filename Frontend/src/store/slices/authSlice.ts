@@ -9,21 +9,10 @@ import {
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from '../../firebase/config'
 
-interface FirestoreProfile {
-  role?: string
-  isVendor?: boolean
-  [key: string]: unknown
-}
-
-interface User {
-  uid: string
-  email?: string | null
-  displayName?: string | null
-  [key: string]: unknown
-}
+import type { FirestoreProfile, IUser } from '../../types'
 
 type AuthPayload = {
-  user: User
+  user: IUser
   profile?: FirestoreProfile
 }
 
@@ -92,12 +81,13 @@ export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async ()
 
   // convert Firestore Timestamp to ISO string to keep payload serializable
   const data = snap.data()
-  if (data && (data as any).createdAt) {
-    const ca = (data as any).createdAt
+  const ca0 = (data as unknown as FirestoreProfile | undefined)?.createdAt
+  if (ca0) {
+    const ca = ca0 as any
     if (typeof ca === 'object' && 'seconds' in ca) {
-      ;(data as any).createdAt = new Date(ca.seconds * 1000).toISOString()
+      ;(data as unknown as any).createdAt = new Date(ca.seconds * 1000).toISOString()
     } else if (ca && typeof ca.toDate === 'function') {
-      ;(data as any).createdAt = ca.toDate().toISOString()
+      ;(data as unknown as any).createdAt = ca.toDate().toISOString()
     }
   }
 
@@ -115,12 +105,13 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (payload: { em
   const userRef = doc(db, 'users', user.uid)
   const snap = await getDoc(userRef)
   const profileData = snap.exists() ? snap.data() : undefined
-  if (profileData && (profileData as any).createdAt) {
-    const ca = (profileData as any).createdAt
+  const ca1 = (profileData as unknown as FirestoreProfile | undefined)?.createdAt
+  if (ca1) {
+    const ca = ca1 as any
     if (typeof ca === 'object' && 'seconds' in ca) {
-      ;(profileData as any).createdAt = new Date(ca.seconds * 1000).toISOString()
+      ;(profileData as unknown as any).createdAt = new Date(ca.seconds * 1000).toISOString()
     } else if (ca && typeof ca.toDate === 'function') {
-      ;(profileData as any).createdAt = ca.toDate().toISOString()
+      ;(profileData as unknown as any).createdAt = ca.toDate().toISOString()
     }
   }
 
@@ -130,15 +121,16 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (payload: { em
   }
 })
 
-function sanitizeProfile(profile: any) {
+function sanitizeProfile(profile: FirestoreProfile | undefined | null) {
   if (!profile || typeof profile !== 'object') return profile
   const copy = { ...profile }
-  const ca = copy.createdAt
+  const ca = (copy as unknown as FirestoreProfile).createdAt
   if (ca) {
-    if (typeof ca === 'object' && 'seconds' in ca) {
-      copy.createdAt = new Date(ca.seconds * 1000).toISOString()
-    } else if (ca && typeof ca.toDate === 'function') {
-      copy.createdAt = ca.toDate().toISOString()
+    const _ca = ca as any
+    if (typeof _ca === 'object' && 'seconds' in _ca) {
+      ;(copy as any).createdAt = new Date(_ca.seconds * 1000).toISOString()
+    } else if (_ca && typeof _ca.toDate === 'function') {
+      ;(copy as any).createdAt = _ca.toDate().toISOString()
     }
   }
   return copy
@@ -148,16 +140,17 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<{ user: User; profile?: FirestoreProfile }>) {
+    setUser(state, action: PayloadAction<{ user: IUser; profile?: FirestoreProfile }>) {
       const profile = action.payload.profile
       // sanitize Firestore Timestamp to serializable string
       const safeProfile = profile && typeof profile === 'object' ? { ...profile } : profile
-      if (safeProfile && (safeProfile as any).createdAt) {
-        const ca = (safeProfile as any).createdAt
+      const ca2 = (safeProfile as unknown as FirestoreProfile | undefined)?.createdAt
+      if (ca2) {
+        const ca = ca2 as any
         if (typeof ca === 'object' && 'seconds' in ca) {
-          ;(safeProfile as any).createdAt = new Date(ca.seconds * 1000).toISOString()
+          ;(safeProfile as unknown as any).createdAt = new Date(ca.seconds * 1000).toISOString()
         } else if (ca && typeof ca.toDate === 'function') {
-          ;(safeProfile as any).createdAt = ca.toDate().toISOString()
+          ;(safeProfile as unknown as any).createdAt = ca.toDate().toISOString()
         }
       }
 

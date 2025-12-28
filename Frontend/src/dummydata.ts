@@ -2,34 +2,9 @@ import fashion from './assets/images/Fashion_Unimart.jpg'
 import food from './assets/images/Food_Unimart.jpg'
 import electronics from './assets/images/Electronics_Unimart.jpg'
 import education from './assets/images/Education_Unimart.jpg'
+import type { IVendorProfile } from './types'
 
-export interface IVendorProfile {
-  id: string
-  businessName: string
-  fullName: string
-  email: string
-  whatsappNumber: string
-  category: string
-  subcategory: string
-  description: string
-  faculty: string
-  location: string
-  offerings: string[]
-  profilePictureUrl: string
-  backdropPictureUrl: string
-  isVerified: boolean
-  rating: number
-  reviewCount: number
-  responseTime: string
-  reviews: Array<{
-    id: string
-    customerName: string
-    customerFaculty: string
-    rating: number
-    date: string
-    comment: string
-  }>
-}
+// NOTE: IVendorProfile is centralized in src/types/index.ts
 
 export const MOCK_VENDORS: IVendorProfile[] = [
   {
@@ -45,7 +20,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
       'Sarah prepares homestyle Nigerian dishes with fresh ingredients. Popular items include jollof rice, amala and ewedu, and small chops for events. Meals are prepared daily and available for pick-up or delivery on campus.',
     faculty: 'Faculty of Arts',
     location: 'Main Campus Canteen',
-    offerings: ['Jollof Rice', 'Amala & Ewedu', 'Small Chops', 'Plantain'],
+    services: ['Jollof Rice', 'Amala & Ewedu', 'Small Chops', 'Plantain'],
     profilePictureUrl: food,
     backdropPictureUrl: food,
     isVerified: true,
@@ -71,7 +46,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
       }
     ]
   },
-//   create 10 more vendor profiles with different details
+  //   create 10 more vendor profiles with different details
 
   {
     id: 'basil-bakes',
@@ -85,7 +60,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
       'Freshly baked cakes, pastries, and bread prepared daily. Special orders for birthdays and events. Vegan options available on request.',
     faculty: 'Management',
     location: 'Student Village',
-    offerings: ['Custom Cakes', 'Cupcakes', 'Bread', 'Pastries'],
+    services: ['Custom Cakes', 'Cupcakes', 'Bread', 'Pastries'],
     profilePictureUrl: food,
     backdropPictureUrl: food,
     isVerified: false,
@@ -115,7 +90,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Custom tees, hoodies, and varsity jackets with campus prints. Group orders and event merchandise available.',
     faculty: 'Arts',
     location: 'Market Row',
-    offerings: ['Custom Tees', 'Hoodies', 'Jackets', 'Merch'],
+    services: ['Custom Tees', 'Hoodies', 'Jackets', 'Merch'],
     profilePictureUrl: fashion,
     backdropPictureUrl: fashion,
     isVerified: false,
@@ -137,7 +112,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Reliable phone and laptop repairs with genuine parts and warranty on repairs.',
     faculty: 'Sciences',
     location: 'Tech Hub',
-    offerings: ['Screen Repair', 'Battery Replacement', 'Data Recovery'],
+    services: ['Screen Repair', 'Battery Replacement', 'Data Recovery'],
     profilePictureUrl: electronics,
     backdropPictureUrl: electronics,
     isVerified: true,
@@ -159,7 +134,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Made-to-order cakes and confectioneries. Fresh ingredients and bespoke designs.',
     faculty: 'Management',
     location: 'Bakery Lane',
-    offerings: ['Cakes', 'Pastries', 'Cookies'],
+    services: ['Cakes', 'Pastries', 'Cookies'],
     profilePictureUrl: food,
     backdropPictureUrl: food,
     isVerified: false,
@@ -181,7 +156,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'High-quality prints, flyers, banners and booklets for campus events and societies.',
     faculty: 'Law',
     location: 'Print Block',
-    offerings: ['Flyers', 'Banners', 'Booklets', 'Stickers'],
+    services: ['Flyers', 'Banners', 'Booklets', 'Stickers'],
     profilePictureUrl: education,
     backdropPictureUrl: education,
     isVerified: false,
@@ -203,7 +178,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Street-style wraps and spicy local bites, perfect for a quick lunch on campus.',
     faculty: 'Science',
     location: 'Food Court',
-    offerings: ['Wraps', 'Spicy Snacks', 'Drinks'],
+    services: ['Wraps', 'Spicy Snacks', 'Drinks'],
     profilePictureUrl: food,
     backdropPictureUrl: food,
     isVerified: true,
@@ -225,7 +200,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Graphic design and branding services for clubs, events, and student startups.',
     faculty: 'Engineering',
     location: 'Studio 3',
-    offerings: ['Branding', 'Posters', 'Social Media Design'],
+    services: ['Branding', 'Posters', 'Social Media Design'],
     profilePictureUrl: electronics,
     backdropPictureUrl: electronics,
     isVerified: false,
@@ -247,7 +222,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Curated pre-loved clothing and accessories with unique vintage finds.',
     faculty: 'Arts',
     location: 'Flea Market',
-    offerings: ['Vintage Jackets', 'Accessories', 'Pre-loved Dresses'],
+    services: ['Vintage Jackets', 'Accessories', 'Pre-loved Dresses'],
     profilePictureUrl: fashion,
     backdropPictureUrl: fashion,
     isVerified: true,
@@ -269,7 +244,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Private tutoring and exam prep for undergraduate courses with flexible scheduling.',
     faculty: 'Education',
     location: 'Library Annex',
-    offerings: ['One-on-one Tutoring', 'Group Sessions', 'Exam Prep'],
+    services: ['One-on-one Tutoring', 'Group Sessions', 'Exam Prep'],
     profilePictureUrl: education,
     backdropPictureUrl: education,
     isVerified: false,
@@ -291,7 +266,7 @@ export const MOCK_VENDORS: IVendorProfile[] = [
     description: 'Freshly brewed coffee, sandwiches and study-friendly seating for students.',
     faculty: 'Management',
     location: 'Student Centre',
-    offerings: ['Coffee', 'Sandwiches', 'Pastries'],
+    services: ['Coffee', 'Sandwiches', 'Pastries'],
     profilePictureUrl: food,
     backdropPictureUrl: food,
     isVerified: true,

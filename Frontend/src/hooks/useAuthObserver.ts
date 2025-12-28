@@ -5,6 +5,21 @@ import { useDispatch } from 'react-redux'
 import { auth, db } from '../firebase/config'
 import { setUser, logoutUser, setLoading, setError } from '../store/slices/authSlice'
 import type { AppDispatch } from '../store/store'
+import type { FirestoreProfile } from '../types'
+
+function sanitizeProfile(profile: FirestoreProfile | undefined | null) {
+  if (!profile || typeof profile !== 'object') return profile
+  const copy = { ...profile }
+  const ca = copy.createdAt
+  if (ca) {
+    if (typeof ca === 'object' && 'seconds' in ca) {
+      copy.createdAt = new Date(ca.seconds * 1000).toISOString()
+    } else if (ca && typeof ca.toDate === 'function') {
+      copy.createdAt = ca.toDate().toISOString()
+    }
+  }
+  return copy
+}
 
 export default function useAuthObserver() {
   const dispatch = useDispatch<AppDispatch>()
@@ -16,7 +31,7 @@ export default function useAuthObserver() {
         try {
           const userRef = doc(db, 'users', user.uid)
           const snap = await getDoc(userRef)
-          const profile = snap.exists() ? snap.data() : undefined
+          const profile = snap.exists() ? sanitizeProfile(snap.data()) : undefined
 
           dispatch(
             setUser({

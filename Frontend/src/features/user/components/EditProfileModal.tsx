@@ -99,7 +99,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/50 cursor-pointer hover:opacity-80" onClick={onClose} />
 
       <div className="relative z-10 w-full max-w-md mx-4 bg-white rounded-2xl shadow-lg">
           <div className="flex items-center justify-between p-6 border-b">
@@ -153,7 +153,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
             <button type="button" onClick={onClose} className="px-4 py-2 border rounded text-sm">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#2563eb] text-white rounded text-sm">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#2563eb] text-white rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Save Changes'}
             </button>
           </div>
