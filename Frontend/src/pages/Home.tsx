@@ -4,9 +4,7 @@ import electronics from '../assets/images/Electronics_Unimart.jpg'
 import education from '../assets/images/Education_Unimart.jpg'
 import { TrustCard } from '../components/home/TrustCard'
 import type { TrustCardProps } from '../components/home/TrustCard'
-import { RiUserFill } from "react-icons/ri";
-import { HiBuildingStorefront } from "react-icons/hi2";
-import { HiMiniBuildingOffice2 } from "react-icons/hi2";
+import { User, Store, Building } from 'lucide-react'
 import { FeaturedVendorsCard } from '../components/home/FeaturedVendorsCard'
 import type { FeaturedVendorsCardProps } from '../components/home/FeaturedVendorsCard'
 import { TestimonialsCard } from '../components/home/TestimonialsCard'
@@ -87,17 +85,17 @@ const Home = () => {
     {
       name: 'UI Student',
       number: "5,000+",
-      icon: <RiUserFill />
+      icon: <User />
     },
     {
       name: 'Student Vendors',
       number: "150+",
-      icon: <HiBuildingStorefront />
+      icon: <Store />
     },
     {
       name: 'Faculties Served',
       number: "12",
-      icon: <HiMiniBuildingOffice2 />
+      icon: <Building />
 
     }
   ]

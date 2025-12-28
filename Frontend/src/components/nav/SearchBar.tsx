@@ -1,10 +1,10 @@
-import { FiSearch } from "react-icons/fi";
+import { Search } from 'lucide-react'
 
 export const SearchBar = () => {
   return (
     <div className="w-full flex items-center border border-gray-300 rounded-md py-2 px-2">
         <button className="mr-2 text-gray-400">
-        <FiSearch />
+        <Search size={16} />
       </button>
       <input
         type="text"

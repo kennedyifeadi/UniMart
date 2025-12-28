@@ -1,8 +1,16 @@
 import { Formik, Form, Field } from 'formik'
-import artisanSchema from '../../lib/formSchemas/artisanSchema'
-import type { IVendorProfile } from '../../types/vendor'
+import vendorSchema from '../../lib/formSchemas/vendorSchema'
 import Input from '../../components/Auth/Input'
-import { HiShieldCheck } from 'react-icons/hi'
+import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import type { RootState } from '../../store/store'
+import { setUser } from '../../store/slices/authSlice'
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../../firebase/config'
+// icon removed
+import { useState } from 'react'
+import Toast from '../../components/Toast'
+import ConfirmationModal from '../../components/ConfirmationModal'
 
 const categories = [
   { value: 'food', label: 'Food' },
@@ -11,19 +19,78 @@ const categories = [
   { value: 'education', label: 'Education' }
 ]
 
-const initialValues: IVendorProfile = {
-  fullName: '',
+const initialValues = {
+  vendorName: '',
   businessName: '',
   category: '',
-  bio: '',
-  whatsapp: '',
-  studentIdFile: null
+  whatsappNumber: '',
+  description: '',
 }
 
 export const CreateProfile = () => {
-  const handleSubmit = (values: IVendorProfile) => {
-    // TODO: wire to artisanService
-    console.log('Vendor profile:', values)
+  const navigate = useNavigate()
+  const { currentUser } = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch()
+  const [toast, setToast] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState(false)
+
+  const handleSubmit = async (values: typeof initialValues) => {
+    if (!currentUser?.uid) {
+      // user must be logged in
+      navigate('/login')
+      return
+    }
+
+    const vendorName = values.vendorName.trim()
+    // initials: first letter of first two names
+    const parts = vendorName.split(/\s+/)
+    const initials = parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + (parts[1]?.[0] ?? '')).toUpperCase()
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(vendorName)}&background=random`
+
+    const vendorDoc = {
+      vendorName: values.vendorName,
+      businessName: values.businessName,
+      category: values.category,
+      whatsappNumber: values.whatsappNumber,
+      description: values.description,
+      initials,
+      avatarUrl,
+      onboardingStatus: 'incomplete',
+      completionPercentage: 20,
+      images: { profile: '', backdrop: '' },
+      isVerified: false,
+      createdAt: serverTimestamp(),
+      ownerUid: currentUser.uid,
+    }
+
+    try {
+      const vendorsRef = doc(db, 'vendors', currentUser.uid)
+      await setDoc(vendorsRef, vendorDoc)
+
+      // update user doc
+      const userRef = doc(db, 'users', currentUser.uid)
+      await setDoc(userRef, { isVendor: true, role: 'vendor' }, { merge: true })
+
+        // update redux auth state so routes recognize vendor immediately
+        try {
+          if (currentUser) {
+            dispatch(setUser({ user: currentUser, profile: { role: 'vendor', isVendor: true } }))
+          }
+        } catch (err) {
+          console.warn('Failed to update local auth state', err)
+        }
+
+      setToast('Vendor profile created successfully')
+      setShowModal(true)
+    } catch (err) {
+      console.error('Failed to create vendor profile', err)
+      setToast('Failed to create vendor profile')
+    }
+  }
+
+  const handleGoToDashboard = () => {
+    setShowModal(false)
+    navigate('/vendor/dashboard')
   }
 
   return (
@@ -34,8 +101,8 @@ export const CreateProfile = () => {
           <p className="text-sm text-gray-600">Create your vendor profile and connect with the UI community</p>
         </div>
 
-        <Formik initialValues={initialValues} validationSchema={artisanSchema} onSubmit={handleSubmit}>
-          {({ values, handleChange, handleBlur, setFieldValue, errors, touched }) => (
+        <Formik initialValues={initialValues} validationSchema={vendorSchema} onSubmit={handleSubmit}>
+          {({ values, handleChange, handleBlur, errors, touched }) => (
             <Form className="space-y-6">
               {/* Form Card */}
               <div className="bg-white rounded-xl shadow-md p-6">
@@ -44,14 +111,14 @@ export const CreateProfile = () => {
                     {() => (
                       <Input
                         label="Vendor Name"
-                        name="fullName"
+                        name="vendorName"
                         placeholder="Enter your full name"
                         required
-                        value={values.fullName}
+                        value={values.vendorName}
                         onChange={handleChange}
                         formikOnBlur={handleBlur}
-                        externalError={errors.fullName as string | undefined}
-                        externalTouched={Boolean(touched.fullName)}
+                        externalError={errors.vendorName as string | undefined}
+                        externalTouched={Boolean(touched.vendorName)}
                       />
                     )}
                   </Field>
@@ -92,72 +159,63 @@ export const CreateProfile = () => {
 
                   <Field name="whatsapp">
                     {() => (
-                      <Input
-                        label="WhatsApp Number"
-                        name="whatsapp"
-                        placeholder="8123456789"
-                        required
-                        prefix={<span className="font-medium">+234</span>}
-                        value={values.whatsapp}
-                        onChange={handleChange}
-                        formikOnBlur={handleBlur}
-                        externalError={errors.whatsapp as string | undefined}
-                        externalTouched={Boolean(touched.whatsapp)}
-                      />
+                      <div>
+                        <label className="block mb-1 text-sm font-medium">WhatsApp Number</label>
+                        <div className="flex">
+                          <div className="inline-flex items-center px-3 rounded-l-md bg-gray-100 border border-r-0">+234</div>
+                          <input
+                            name="whatsappNumber"
+                            placeholder="8123456789"
+                            value={values.whatsappNumber}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="flex-1 px-3 py-2 border rounded-r-md"
+                          />
+                        </div>
+                        {errors.whatsappNumber && touched.whatsappNumber && <div className="text-xs text-red-500 mt-1">{errors.whatsappNumber as string}</div>}
+                      </div>
                     )}
                   </Field>
 
                   <div className="md:col-span-2">
                     <Field name="bio">
                       {() => (
-                        <Input
-                          label="Business Details (Bio)"
-                          name="bio"
-                          variant="textarea"
-                          placeholder="Tell us about your business"
-                          required
-                          maxLength={500}
-                          value={values.bio}
-                          onChange={handleChange}
-                          formikOnBlur={handleBlur}
-                          externalError={errors.bio as string | undefined}
-                          externalTouched={Boolean(touched.bio)}
-                        />
+                        <div>
+                          <label className="block mb-1 text-sm font-medium">Business Details (Bio)</label>
+                          <textarea
+                            name="description"
+                            placeholder="Tell us about your business"
+                            maxLength={500}
+                            value={values.description}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="w-full min-h-[120px] border p-2 rounded"
+                          />
+                          <div className="text-right text-xs text-gray-500 mt-1">{String(values.description?.length ?? 0)}/500</div>
+                          {errors.description && touched.description && <div className="text-xs text-red-500 mt-1">{errors.description as string}</div>}
+                        </div>
                       )}
                     </Field>
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <button type="submit" className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold">Submit Application</button>
+                  <button type="submit" className="w-full py-3 rounded-lg bg-[#2563eb] text-white font-semibold">Submit Application</button>
                 </div>
               </div>
-
-              {/* Verification Card */}
-              <div className="bg-green-50 rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-                <div className="bg-green-100 p-3 rounded-full mb-3">
-                  <HiShieldCheck className="text-green-600 w-8 h-8" />
-                </div>
-                <h3 className="font-bold text-lg mb-1">Verify Your Business with UI</h3>
-                <p className="text-sm text-gray-700 mb-4">Uploading your student ID helps verify you as a student vendor — it increases trust and visibility among fellow students.</p>
-
-                <div className="w-full max-w-md">
-                  <label className="block mb-2 text-sm font-medium">Student ID Card (Optional but Recommended)</label>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,application/pdf"
-                    onChange={(e) => {
-                      const file = e.currentTarget.files?.[0]
-                      setFieldValue('studentIdFile', file ?? null)
-                    }}
-                    className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-white file:text-sm file:font-semibold file:text-blue-600"
-                  />
-                  <p className="text-xs text-gray-500 mt-2">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
-                </div>
-              </div>
+              {/* simplified onboarding only: no verification or file uploads */}
             </Form>
           )}
         </Formik>
+          {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+          {showModal && (
+            <ConfirmationModal
+              title="Vendor Profile Created"
+              message="Your vendor profile is set up. You can complete more details from your dashboard."
+              onConfirm={handleGoToDashboard}
+              onClose={() => setShowModal(false)}
+            />
+          )}
       </div>
     </div>
   )

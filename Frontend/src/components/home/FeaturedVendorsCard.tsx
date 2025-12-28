@@ -1,4 +1,4 @@
-import { FaCheck } from "react-icons/fa6";
+import { CheckCircle } from 'lucide-react'
 import { Link } from "react-router-dom";
 
 export interface FeaturedVendorsCardProps {
@@ -24,7 +24,7 @@ export const FeaturedVendorsCard = ({
                 <span className="flex justify-between w-full h-max z-10 p-2">
                     <span className="w-max rounded-full px-3 text-sm py-[1px] bg-[#2563eb] flex justify-center items-center text-white">{category}</span>
                     <span>
-                        {verified && <span className="bg-[#22c55e] w-5 h-5 rounded-full flex justify-center items-center"><FaCheck fill="white" size={12} /></span>}
+                        {verified && <span className="bg-[#22c55e] w-5 h-5 rounded-full flex justify-center items-center"><CheckCircle fill="white" size={12} /></span>}
                     </span>
                 </span>
                 <img src={image} alt={name} className='w-full h-full object-cover absolute top-0 group-hover:scale-105 transition-transform duration-300 ease-in-out' />

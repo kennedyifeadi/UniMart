@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CarouselProps {
   children: React.ReactNode[];
@@ -69,14 +69,14 @@ export const Carousel = ({
             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:translate-x-52 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10"
             aria-label="Previous slide"
           >
-            <FaChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={goToNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:-translate-x-52 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10"
             aria-label="Next slide"
           >
-            <FaChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5" />
           </button>
         </>
       )}

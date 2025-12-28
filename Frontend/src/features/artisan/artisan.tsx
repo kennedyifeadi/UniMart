@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { MOCK_VENDORS } from '../../dummydata'
 import type { IVendorProfile } from '../../dummydata'
-import { HiShieldCheck } from 'react-icons/hi'
+import { ShieldCheck, Star, ArrowRight, MapPin } from 'lucide-react'
 import { AiFillStar, AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
-import { HiOutlineLocationMarker } from 'react-icons/hi'
+import { HiShieldCheck } from 'react-icons/hi'
 // removed unused AiOutlineCheck
 
 const Artisan: React.FC = () => {
@@ -47,9 +47,9 @@ const Artisan: React.FC = () => {
           <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block bg-blue-50 text-[#2563eb] px-2 py-0.5 rounded-md text-sm">{vendor.category} → {vendor.subcategory}</span>
-              {vendor.isVerified && (
+                  {vendor.isVerified && (
                 <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-0.5 rounded-md text-sm">
-                  <HiShieldCheck className="w-4 h-4 text-green-600" /> UI Verified
+                  <ShieldCheck className="w-4 h-4 text-green-600" /> UI Verified
                 </span>
               )}
             </div>
@@ -57,7 +57,7 @@ const Artisan: React.FC = () => {
             <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight">{vendor.businessName}</h1>
 
             <div className="flex items-center gap-2 mt-2 text-sm text-gray-200">
-              <AiFillStar className="text-yellow-400" />
+              <Star className="text-yellow-400" />
               <span className="font-medium">{vendor.rating.toFixed(1)}</span>
               <span className="text-gray-300">from {vendor.reviewCount} reviews</span>
             </div>
@@ -72,7 +72,7 @@ const Artisan: React.FC = () => {
             <h2 className="text-lg font-semibold mb-3">About {vendor.businessName}</h2>
             <p className="text-sm text-gray-700">{vendor.description}</p>
             <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
-              <HiOutlineLocationMarker />
+              <MapPin />
               <div>{vendor.faculty} — {vendor.location}</div>
             </div>
           </div>
@@ -81,8 +81,8 @@ const Artisan: React.FC = () => {
             <h3 className="text-lg font-semibold mb-3">What We Offer</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {vendor.offerings.map((it) => (
-                <div key={it} className="flex items-center gap-2 text-sm text-gray-700">
-                  <AiOutlineArrowRight className="text-[#2563eb]" />
+                  <div key={it} className="flex items-center gap-2 text-sm text-gray-700">
+                  <ArrowRight className="text-[#2563eb]" />
                   <span>{it}</span>
                 </div>
               ))}

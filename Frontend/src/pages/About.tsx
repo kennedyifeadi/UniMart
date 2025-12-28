@@ -4,10 +4,7 @@ import { Heading1 } from "../components/headings/Heading1"
 import { Heading3 } from "../components/headings/Heading3"
 import studentImage from "../assets/images/UI-students.jpg"
 import { GoalCard, type GoalCardProps } from "../components/about/GoalCard"
-import { RiShieldCheckLine } from "react-icons/ri";
-import { RiSmartphoneLine } from "react-icons/ri";
-import { GrGroup } from "react-icons/gr";
-import { RiShoppingBag3Line } from "react-icons/ri";
+import { ShieldCheck, Smartphone, Users, ShoppingBag } from 'lucide-react'
 import { TeamCard } from "../components/about/TeamCard"
 import maleProfile from "../assets/images/MaleProfile.jpg"
 import FemaleProfile from "../assets/images/FemaleProfile.jpg"
@@ -34,25 +31,25 @@ const About = () => {
     }
   ]
   const goals: GoalCardProps[] = [
-    {
+      {
       title: 'Easy Discovery',
       description: 'Help students easily discover businesses and services from their fellow UI students with intuitive search and categories.',
-      icon: <RiShoppingBag3Line size={30} />
+      icon: <ShoppingBag size={30} />
     },
     {
       title: 'Community Support',
       description: 'Boost entrepreneurship and community support by connecting student businesses with their target audience.',
-      icon: <GrGroup size={30} />
+      icon: <Users size={30} />
     },
     {
       title: 'Trusted Connections',
       description: 'Provide safe and trusted vendor connections through our UI verification system and community reviews.',
-      icon: <RiShieldCheckLine size={30} />
+      icon: <ShieldCheck size={30} />
     },
     {
       title: 'Mobile-First Experience',
       description: 'Offer a simple, mobile-first experience that works seamlessly across all devices for busy students.',
-      icon: <RiSmartphoneLine size={30} />
+      icon: <Smartphone size={30} />
     }
   ]
   const teamMembers = [

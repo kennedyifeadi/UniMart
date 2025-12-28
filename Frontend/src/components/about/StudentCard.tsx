@@ -1,4 +1,4 @@
-import { MdOutlineStar } from "react-icons/md";
+import { Star } from 'lucide-react'
 
 export interface StoryProps {
   name: string;
@@ -16,7 +16,7 @@ export const StudentCard = ({ name, testimonial, rating, faculty, image }: Story
       <div className="w-[70%] md:w-[80%] flex flex-col gap-2">
         <span className="text-[#facc15] flex ">
           {Array.from({ length: rating }, (_, i) => (
-            <MdOutlineStar key={i} size={24} />
+            <Star key={i} size={24} />
           ))}
         </span>
         <p className="text-gray-700 text-sm md:text-lg">{testimonial}</p>

@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import VendorCard from './VendorCard'
-import { HiSearch } from 'react-icons/hi'
-import { MdOutlineVerifiedUser } from "react-icons/md";
+import { Search, CheckCircle } from 'lucide-react'
 import type { IVendor } from '../../types/vendor'
-import { AiFillStar } from 'react-icons/ai'
+import { Star } from 'lucide-react'
 import { MOCK_VENDORS as DUMMY_VENDOR_PROFILES } from '../../dummydata'
 
 
@@ -60,8 +59,8 @@ const AllVendors: React.FC = () => {
         {/* Sidebar */}
         <aside className="w-full md:w-1/4">
           <div className="bg-white rounded-xl border-gray-200 border-[2px] p-4 sticky top-20">
-            <div className="relative mb-4">
-              <HiSearch className="absolute left-3 top-3 text-gray-400" />
+              <div className="relative mb-4">
+              <Search className="absolute left-3 top-3 text-gray-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -97,7 +96,7 @@ const AllVendors: React.FC = () => {
                     onClick={() => setRatingFilter(r)}
                     className={`text-sm flex items-center py-2 text-left px-2 ${ratingFilter === r ? 'text-[#2563eb] font-medium' : 'text-gray-700'}`}
                   >
-                   {r === '4+' && <AiFillStar className="inline text-yellow-400 mr-1" />} {r} stars
+                   {r === '4+' && <Star className="inline text-yellow-400 mr-1" />} {r} stars
                   </button>
                 ))}
               </div>
@@ -107,7 +106,7 @@ const AllVendors: React.FC = () => {
               <h4 className="text-md font-medium mb-4">Verification</h4>
               <label className="flex items-center gap-2 text-md text-gray-700">
                 <input type="checkbox" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)}  />
-                <span className="flex items-center gap-2"> Show only UI Verified vendors <MdOutlineVerifiedUser className="text-green-600" /></span>
+                <span className="flex items-center gap-2"> Show only UI Verified vendors <CheckCircle className="text-green-600" /></span>
               </label>
             </div>
 

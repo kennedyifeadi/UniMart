@@ -1,27 +1,24 @@
 import { Socials, type SocialsProps } from "./Socials"
-import { RiInstagramFill } from "react-icons/ri";
-import { RiFacebookFill } from "react-icons/ri";
-import { RiTwitterFill } from "react-icons/ri";
-import { RiLinkedinFill } from "react-icons/ri";
+import { Instagram, Facebook, Twitter, Linkedin } from 'lucide-react'
 
 
 export const Footer = () => {
   const SocialsList: SocialsProps[] = [
     {
       link: "/",
-      icon: <RiInstagramFill size={20} />
+      icon: <Instagram size={20} />
     },
     {
       link: "/",
-      icon: <RiFacebookFill size={20} />
+      icon: <Facebook size={20} />
     },
     {
       link: "/",
-      icon: <RiTwitterFill size={20} />
+      icon: <Twitter size={20} />
     },
     {
       link: "/",
-      icon: <RiLinkedinFill size={20} />
+      icon: <Linkedin size={20} />
     },
   ]
   const QuickLinks = [

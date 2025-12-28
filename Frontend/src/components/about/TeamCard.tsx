@@ -1,4 +1,4 @@
-import { ImLinkedin2,ImGithub } from "react-icons/im";
+import { Linkedin, Github } from 'lucide-react'
 import { Link } from "react-router-dom";
 
 
@@ -24,8 +24,8 @@ export const TeamCard = ({ name, role, bio, image, linkedin, instagram }: TeamCa
         <h2 className="text-[#2563eb] font-medium text-xl">{role}</h2>
         <span className="text-gray-600 text-sm">{bio}</span>
         <span className="flex gap-2">
-          <Link to={linkedin ? linkedin : "#"} className="rounded-full w-8 h-8 bg-gray-200 flex justify-center items-center"><ImLinkedin2 size={16} /></Link>
-          <Link to={instagram ? instagram : "#"} className="rounded-full w-8 h-8 bg-gray-200 flex justify-center items-center"><ImGithub size={16} /></Link>
+           <Link to={linkedin ? linkedin : "#"} className="rounded-full w-8 h-8 bg-gray-200 flex justify-center items-center"><Linkedin size={16} /></Link>
+           <Link to={instagram ? instagram : "#"} className="rounded-full w-8 h-8 bg-gray-200 flex justify-center items-center"><Github size={16} /></Link>
         </span>
       </div>
     </div>
