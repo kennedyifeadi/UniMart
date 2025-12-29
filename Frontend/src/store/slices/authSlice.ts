@@ -11,6 +11,14 @@ import { auth, db } from '../../firebase/config'
 
 import type { FirestoreProfile, IUser } from '../../types'
 
+function getErrorProp(err: unknown, prop: 'code' | 'message'): string | undefined {
+  if (typeof err === 'object' && err !== null && prop in err) {
+    const val = (err as Record<string, unknown>)[prop]
+    return typeof val === 'string' ? val : undefined
+  }
+  return undefined
+}
+
 type AuthPayload = {
   user: IUser
   profile?: FirestoreProfile
@@ -59,27 +67,38 @@ export const registerUser = createAsyncThunk(
 
 export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async () => {
   const provider = new GoogleAuthProvider()
-  const result = await signInWithPopup(auth, provider)
-  const user = result.user
-
-  const userRef = doc(db, 'users', user.uid)
-  const snap = await getDoc(userRef)
-  if (!snap.exists()) {
-    await setDoc(userRef, {
-      uid: user.uid,
-      fullName: user.displayName ?? '',
-      email: user.email ?? '',
-      role: 'user',
-      isVendor: false,
-      createdAt: serverTimestamp(),
-    })
-    return {
-      user: { uid: user.uid, email: user.email, displayName: user.displayName },
-      profile: { role: 'user', isVendor: false, fullName: user.displayName },
-    }
+  let result
+  try {
+    result = await signInWithPopup(auth, provider)
+  } catch (err) {
+    // surface Firebase auth errors with code and message
+    console.error('Google sign-in failed (auth):', err)
+    const code = getErrorProp(err, 'code') ?? ''
+    const message = getErrorProp(err, 'message') ?? String(err)
+    throw new Error(`Google sign-in failed${code ? ` (${code})` : ''}: ${message}`)
   }
 
-  // convert Firestore Timestamp to ISO string to keep payload serializable
+  const user = result.user
+
+  try {
+    const userRef = doc(db, 'users', user.uid)
+    const snap = await getDoc(userRef)
+    if (!snap.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        fullName: user.displayName ?? '',
+        email: user.email ?? '',
+        role: 'user',
+        isVendor: false,
+        createdAt: serverTimestamp(),
+      })
+      return {
+        user: { uid: user.uid, email: user.email, displayName: user.displayName },
+        profile: { role: 'user', isVendor: false, fullName: user.displayName },
+      }
+    }
+
+    // convert Firestore Timestamp to ISO string to keep payload serializable
     const data = snap.data()
     const ca0 = (data as unknown as FirestoreProfile | undefined)?.createdAt
     if (ca0) {
@@ -91,9 +110,13 @@ export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async ()
       }
     }
 
-  return {
-    user: { uid: user.uid, email: user.email, displayName: user.displayName },
-    profile: data,
+    return {
+      user: { uid: user.uid, email: user.email, displayName: user.displayName },
+      profile: data,
+    }
+  } catch (err) {
+    console.error('Google sign-in failed (firestore):', err)
+    throw new Error(`Google sign-in succeeded but fetching/saving profile failed: ${getErrorProp(err, 'message') ?? String(err)}`)
   }
 })
 

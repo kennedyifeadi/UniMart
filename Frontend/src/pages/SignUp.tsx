@@ -46,6 +46,7 @@ const SignUp = () => {
       const role = profile?.role ?? (profile?.isVendor ? 'vendor' : 'user')
       navigate(role === 'vendor' ? '/vendor/dashboard' : '/dashboard')
     } catch (err: unknown) {
+      console.error('Google sign-in error (ui):', err)
       const message = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Google sign-in failed'
       setError(message)
     } finally {

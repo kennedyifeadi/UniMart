@@ -79,10 +79,11 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
       })
 
       // update local redux state for immediate UI update
+      // include `photoURL` (and `avatarUrl` for compatibility) on the profile
       dispatch(
         setUser({
           user: { uid: currentUser.uid, displayName: fullName, photoURL },
-          profile: { faculty, fullName },
+          profile: { faculty, fullName, photoURL, avatarUrl: photoURL },
         }),
       )
 

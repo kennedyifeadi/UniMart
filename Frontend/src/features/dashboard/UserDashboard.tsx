@@ -55,7 +55,10 @@ const UserDashboard = () => {
     name: profile.fullName ?? auth.currentUser?.displayName ?? 'Student',
     faculty: profile.faculty ?? 'Nil',
     joined: computeJoined(),
-    avatarUrl: profile.avatarUrl === null ? undefined : (profile.avatarUrl ?? profile.photoURL ?? undefined),
+    avatarUrl:
+      profile.avatarUrl === null
+        ? undefined
+        : profile.avatarUrl ?? profile.photoURL ?? auth.currentUser?.photoURL ?? undefined,
   }
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
