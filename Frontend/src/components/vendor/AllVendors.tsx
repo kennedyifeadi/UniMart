@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import VendorCard from './VendorCard'
 import { Search, CheckCircle } from 'lucide-react'
 import type { IVendor } from '../../types'
 import { Star } from 'lucide-react'
 import { collection, getDocs, type DocumentData } from 'firebase/firestore'
+import { useLocation } from 'react-router-dom'
 import { db } from '../../firebase/config'
 
 const CATEGORIES = ['All', 'Food', 'Fashion', 'Services', 'Others']
@@ -55,6 +56,13 @@ const AllVendors: React.FC = () => {
       )
     })
   }, [vendors, search, category, verifiedOnly, ratingFilter])
+
+  const location = useLocation()
+  useEffect(() => {
+    const p = new URLSearchParams(location.search)
+    const q = p.get('q') ?? ''
+    setSearch(q)
+  }, [location.search])
 
   return (
     <div className="w-full py-8 px-4">
@@ -128,7 +136,7 @@ const AllVendors: React.FC = () => {
         {/* Content */}
         <main className="w-full md:w-3/4">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">All Vendors</h2>
+            <h2 className="text-xl font-semibold font-heading">All Vendors</h2>
             <div className="text-sm text-gray-600">{filtered.length} results</div>
           </div>
 

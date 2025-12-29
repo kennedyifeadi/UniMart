@@ -40,7 +40,7 @@ export const NavBar = () => {
             link: "/signup"
         },
   ]
-  const { currentUser, role } = useSelector((state: RootState) => state.auth)
+  const { currentUser, role, profile } = useSelector((state: RootState) => state.auth)
 
   const getInitials = (name?: string | null, email?: string | null) => {
     const source = name || email || ''
@@ -67,12 +67,34 @@ export const NavBar = () => {
           <SearchBar />
         </div>
         <span className="ml-4 cursor-pointer" onClick={() => dispatch(toggleModal())}>
-          {currentUser ? (
-            <div className="bg-[#2563eb] text-white rounded-full w-8 h-8 flex items-center justify-center font-medium">
-              {getInitials(currentUser.displayName ?? (currentUser.fullName as string | undefined), currentUser.email ?? undefined)}
-            </div>
+          {currentUser || profile ? (
+            (() => {
+              type UserProfile = {
+                photoURL?: string | null;
+                avatarUrl?: string | null;
+                fullName?: string | null;
+                email?: string | null;
+              }
+              type AuthUser = {
+                photoURL?: string | null;
+                photoUrl?: string | null;
+                displayName?: string | null;
+                email?: string | null;
+              }
+              const avatar = (profile as UserProfile)?.photoURL ?? (profile as UserProfile)?.avatarUrl ?? (currentUser as AuthUser)?.photoURL ?? (currentUser as AuthUser)?.photoUrl ?? null
+              if (avatar) {
+                return (
+                  <img src={avatar} alt={getInitials(currentUser?.displayName ?? (profile as UserProfile)?.fullName, currentUser?.email ?? (profile as UserProfile)?.email)} className="rounded-full w-8 h-8 object-cover" />
+                )
+              }
+              return (
+                <div className="bg-[#2563eb] text-white rounded-full w-8 h-8 flex items-center justify-center font-medium">
+                  {getInitials(currentUser?.displayName ?? (profile as UserProfile)?.fullName, currentUser?.email ?? (profile as UserProfile)?.email)}
+                </div>
+              )
+            })()
           ) : (
-              <span className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+            <span className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
               <User className="text-black" size={18} />
             </span>
           )}
@@ -86,23 +108,23 @@ export const NavBar = () => {
           isModalOpen ? <X className="md:hidden cursor-pointer" size={25} onClick={() => dispatch(toggleModal())} /> : <Menu className="md:hidden cursor-pointer" size={25} onClick={() => dispatch(toggleModal())} />
         }
         {isModalOpen && isMobile && (
-          <>
-            <div className="absolute top-14 right-0 bg-white shadow-lg rounded-md p-4 w-full flex flex-col gap-3.5">
+          <div className="fixed inset-0 z-50">
+            <div className="absolute inset-0" onClick={() => dispatch(toggleModal())} />
+            <div className="absolute top-14 right-0 bg-white shadow-lg rounded-md p-4 w-full flex flex-col gap-3.5" onClick={(e) => e.stopPropagation()}>
               <SearchBar />
               <div className="flex flex-col gap-3">
                 {navList.map((nav, index) => {
-                  // replace Become a Vendor with dashboard link when logged in
                   if (nav.name === 'Become a Vendor' && currentUser) {
                     const dashName = role === 'vendor' ? 'Vendor Dashboard' : role === 'admin' ? 'Admin Dashboard' : 'Dashboard'
                     const dashLink = role === 'vendor' ? '/vendor/dashboard' : role === 'admin' ? '/admin/dashboard' : '/dashboard'
                     return (
-                      <Link key={index} to={dashLink} className="block text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[16px]">
+                      <Link key={index} to={dashLink} onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[16px]">
                         {dashName}
                       </Link>
                     )
                   }
                   return (
-                    <Link key={index} to={nav.link} className="block text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[16px]">
+                    <Link key={index} to={nav.link} onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-[#2563eb] cursor-pointer font-normal text-[16px]">
                       {nav.name}
                     </Link>
                   )
@@ -111,20 +133,20 @@ export const NavBar = () => {
               <span className="h-[1px] w-full bg-gray-200"></span>
               <div className="flex flex-col gap-3">
                 {mobileMOdalList.map((modal, index) => (
-                  <Link key={index} to={modal.link} className="block text-gray-600 hover:text-blue-500 cursor-pointer font-normal text-[16px]">
+                  <Link key={index} to={modal.link} onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-blue-500 cursor-pointer font-normal text-[16px]">
                     {modal.title}
                   </Link>
                 ))}
                 {currentUser && (
                   <>
-                    <Link to={role === 'vendor' ? '/vendor/dashboard' : role === 'admin' ? '/admin/dashboard' : '/dashboard'} className="block text-gray-600 hover:text-blue-500 cursor-pointer font-normal text-[16px]">
+                    <Link to={role === 'vendor' ? '/vendor/dashboard' : role === 'admin' ? '/admin/dashboard' : '/dashboard'} onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-blue-500 cursor-pointer font-normal text-[16px]">
                       {role === 'vendor' ? 'Vendor Dashboard' : role === 'admin' ? 'Admin Dashboard' : 'Dashboard'}
                     </Link>
                   </>
                 )}
               </div>
             </div>
-          </>
+          </div>
         )}
 
       </span>

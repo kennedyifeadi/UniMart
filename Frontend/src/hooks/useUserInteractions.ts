@@ -6,15 +6,15 @@ import type { RootState } from '../store/store'
 import { setUser } from '../store/slices/authSlice'
 import type { FirestoreProfile } from '../types'
 
-function sanitizeProfile(profile: FirestoreProfile | undefined | null) {
-  if (!profile || typeof profile !== 'object') return profile
-  const copy = { ...profile }
-  const ca = copy.createdAt
+function sanitizeProfile(profile: FirestoreProfile | undefined | null): FirestoreProfile | undefined {
+  if (!profile || typeof profile !== 'object') return undefined
+  const copy = { ...profile } as FirestoreProfile
+  const ca: unknown = copy.createdAt
   if (ca) {
-    if (typeof ca === 'object' && 'seconds' in ca) {
-      copy.createdAt = new Date((ca as any).seconds * 1000).toISOString()
-    } else if (ca && typeof (ca as any).toDate === 'function') {
-      copy.createdAt = (ca as any).toDate().toISOString()
+    if (typeof ca === 'object' && 'seconds' in (ca as object) && typeof (ca as { seconds?: number }).seconds === 'number') {
+      copy.createdAt = new Date((ca as { seconds: number }).seconds * 1000).toISOString()
+    } else if (ca && typeof (ca as { toDate?: () => Date }).toDate === 'function') {
+      copy.createdAt = (ca as { toDate: () => Date }).toDate().toISOString()
     }
   }
   return copy
@@ -38,11 +38,11 @@ export default function useUserInteractions() {
         if (isFav) {
           await updateDoc(userRef, { favorites: arrayRemove(vendorId) })
           const newProfile = { ...(auth.profile || {}), favorites: favorites.filter((f: string) => f !== vendorId) }
-          dispatch(setUser({ user: auth.currentUser, profile: sanitizeProfile(newProfile) }))
+          dispatch(setUser({ user: auth.currentUser!, profile: sanitizeProfile(newProfile) }))
         } else {
           await updateDoc(userRef, { favorites: arrayUnion(vendorId) })
           const newProfile = { ...(auth.profile || {}), favorites: [...favorites, vendorId] }
-          dispatch(setUser({ user: auth.currentUser, profile: sanitizeProfile(newProfile) }))
+          dispatch(setUser({ user: auth.currentUser!, profile: sanitizeProfile(newProfile) }))
         }
       } catch (err) {
         console.error('toggleFavorite failed', err)
@@ -64,7 +64,7 @@ export default function useUserInteractions() {
 
         const snap = await getDoc(userRef)
         const data = snap.data() || {}
-        dispatch(setUser({ user: auth.currentUser, profile: sanitizeProfile(data) }))
+        dispatch(setUser({ user: auth.currentUser!, profile: sanitizeProfile(data) }))
       } catch (err) {
         console.error('trackVendorVisit failed', err)
       }

@@ -17,7 +17,7 @@ type AuthPayload = {
 }
 
 interface AuthState {
-  currentUser: User | null
+  currentUser: IUser | null
   role: 'user' | 'vendor' | 'admin' | string
   isVendor: boolean
   profile?: FirestoreProfile | null
@@ -80,16 +80,16 @@ export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async ()
   }
 
   // convert Firestore Timestamp to ISO string to keep payload serializable
-  const data = snap.data()
-  const ca0 = (data as unknown as FirestoreProfile | undefined)?.createdAt
-  if (ca0) {
-    const ca = ca0 as any
-    if (typeof ca === 'object' && 'seconds' in ca) {
-      ;(data as unknown as any).createdAt = new Date(ca.seconds * 1000).toISOString()
-    } else if (ca && typeof ca.toDate === 'function') {
-      ;(data as unknown as any).createdAt = ca.toDate().toISOString()
+    const data = snap.data()
+    const ca0 = (data as unknown as FirestoreProfile | undefined)?.createdAt
+    if (ca0) {
+      const ca = ca0 as { seconds?: number; toDate?: () => Date } | Date | string
+      if (typeof ca === 'object' && ca !== null && 'seconds' in ca && typeof (ca as { seconds?: number }).seconds === 'number') {
+        ;(data as unknown as { createdAt?: string }).createdAt = new Date((ca as { seconds: number }).seconds * 1000).toISOString()
+      } else if (ca && typeof (ca as { toDate?: () => Date }).toDate === 'function') {
+        ;(data as unknown as { createdAt?: string }).createdAt = (ca as { toDate: () => Date }).toDate().toISOString()
+      }
     }
-  }
 
   return {
     user: { uid: user.uid, email: user.email, displayName: user.displayName },
@@ -107,11 +107,11 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (payload: { em
   const profileData = snap.exists() ? snap.data() : undefined
   const ca1 = (profileData as unknown as FirestoreProfile | undefined)?.createdAt
   if (ca1) {
-    const ca = ca1 as any
-    if (typeof ca === 'object' && 'seconds' in ca) {
-      ;(profileData as unknown as any).createdAt = new Date(ca.seconds * 1000).toISOString()
-    } else if (ca && typeof ca.toDate === 'function') {
-      ;(profileData as unknown as any).createdAt = ca.toDate().toISOString()
+    const ca = ca1 as { seconds?: number; toDate?: () => Date } | Date | string
+    if (typeof ca === 'object' && ca !== null && 'seconds' in ca && typeof (ca as { seconds?: number }).seconds === 'number') {
+      ;(profileData as unknown as { createdAt?: string }).createdAt = new Date((ca as { seconds: number }).seconds * 1000).toISOString()
+    } else if (ca && typeof (ca as { toDate?: () => Date }).toDate === 'function') {
+      ;(profileData as unknown as { createdAt?: string }).createdAt = (ca as { toDate: () => Date }).toDate().toISOString()
     }
   }
 
@@ -126,11 +126,11 @@ function sanitizeProfile(profile: FirestoreProfile | undefined | null) {
   const copy = { ...profile }
   const ca = (copy as unknown as FirestoreProfile).createdAt
   if (ca) {
-    const _ca = ca as any
-    if (typeof _ca === 'object' && 'seconds' in _ca) {
-      ;(copy as any).createdAt = new Date(_ca.seconds * 1000).toISOString()
-    } else if (_ca && typeof _ca.toDate === 'function') {
-      ;(copy as any).createdAt = _ca.toDate().toISOString()
+    const _ca = ca as { seconds?: number; toDate?: () => Date } | Date | string
+    if (typeof _ca === 'object' && _ca !== null && 'seconds' in _ca && typeof (_ca as { seconds?: number }).seconds === 'number') {
+      ;(copy as { createdAt?: string }).createdAt = new Date(((_ca as { seconds: number }).seconds) * 1000).toISOString()
+    } else if (_ca && typeof (_ca as { toDate?: () => Date }).toDate === 'function') {
+      ;(copy as { createdAt?: string }).createdAt = (_ca as { toDate: () => Date }).toDate().toISOString()
     }
   }
   return copy
@@ -146,11 +146,11 @@ const authSlice = createSlice({
       const safeProfile = profile && typeof profile === 'object' ? { ...profile } : profile
       const ca2 = (safeProfile as unknown as FirestoreProfile | undefined)?.createdAt
       if (ca2) {
-        const ca = ca2 as any
-        if (typeof ca === 'object' && 'seconds' in ca) {
-          ;(safeProfile as unknown as any).createdAt = new Date(ca.seconds * 1000).toISOString()
-        } else if (ca && typeof ca.toDate === 'function') {
-          ;(safeProfile as unknown as any).createdAt = ca.toDate().toISOString()
+        const ca = ca2 as { seconds?: number; toDate?: () => Date } | Date | string
+        if (typeof ca === 'object' && ca !== null && 'seconds' in ca && typeof (ca as { seconds?: number }).seconds === 'number') {
+          ;(safeProfile as unknown as { createdAt?: string }).createdAt = new Date((ca as { seconds: number }).seconds * 1000).toISOString()
+        } else if (ca && typeof (ca as { toDate?: () => Date }).toDate === 'function') {
+          ;(safeProfile as unknown as { createdAt?: string }).createdAt = (ca as { toDate: () => Date }).toDate().toISOString()
         }
       }
 

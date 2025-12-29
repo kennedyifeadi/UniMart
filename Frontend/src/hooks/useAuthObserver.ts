@@ -7,18 +7,18 @@ import { setUser, logoutUser, setLoading, setError } from '../store/slices/authS
 import type { AppDispatch } from '../store/store'
 import type { FirestoreProfile } from '../types'
 
-function sanitizeProfile(profile: FirestoreProfile | undefined | null) {
-  if (!profile || typeof profile !== 'object') return profile
-  const copy = { ...profile }
+function sanitizeProfile(profile: FirestoreProfile | undefined | null): FirestoreProfile | undefined {
+  if (!profile || typeof profile !== 'object') return undefined
+  const copy = { ...profile } as Record<string, unknown>
   const ca = copy.createdAt
   if (ca) {
     if (typeof ca === 'object' && 'seconds' in ca) {
-      copy.createdAt = new Date(ca.seconds * 1000).toISOString()
-    } else if (ca && typeof ca.toDate === 'function') {
-      copy.createdAt = ca.toDate().toISOString()
+      copy.createdAt = new Date((ca as { seconds: number }).seconds * 1000).toISOString()
+    } else if (ca && typeof (ca as {toDate?: unknown}).toDate === 'function') {
+      copy.createdAt = (ca as unknown as { toDate: () => Date }).toDate().toISOString()
     }
   }
-  return copy
+  return copy as unknown as FirestoreProfile
 }
 
 export default function useAuthObserver() {

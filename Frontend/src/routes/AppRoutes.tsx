@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react'
+import { Suspense, lazy } from 'react'
 import { Route, Routes } from "react-router-dom"
 import Login from "../pages/Login"
 import SignUp from "../pages/SignUp"
@@ -13,7 +13,7 @@ import { Loader } from '../components/loader/Loader'
 const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
 const Vendors = lazy(() => import('../pages/Vendors'))
-const Artisan = lazy(() => import('../features/artisan/artisan'))
+const Artisan = lazy(() => import('../features/artisan/Artisan'))
 const BecomeAVendor = lazy(() => import('../pages/BecomeAVendor'))
 const VendorDashboard = lazy(() => import('../pages/vendor/Dashboard'))
 const EditVendorProfile = lazy(() => import('../features/vendor/pages/EditVendorProfile'))

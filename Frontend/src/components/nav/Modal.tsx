@@ -30,7 +30,7 @@ export const Modal = () => {
       <div className="fixed top-[50px] right-12 border border-gray-200 transform bg-white py-4 rounded-lg z-50 w-48">
         {modalDetails.map((modal, index) => (
           <div key={index} className="">
-            <Link to={modal.link} className="block text-gray-600 hover:text-blue-500 mb-2 px-4">
+            <Link to={modal.link} onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-blue-500 mb-2 px-4">
               {modal.title}
             </Link>
             {index === 1 && <hr className="border-t border-gray-200 mb-4 mt-4 px-0" />}
@@ -46,10 +46,10 @@ export const Modal = () => {
 
   return (
     <div className="fixed top-[50px] right-12 border border-gray-200 transform bg-white py-4 rounded-lg z-50 w-48">
-      <Link to={dashLink} className="block text-gray-600 hover:text-blue-500 mb-2 px-4">
+      <Link to={dashLink} onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-blue-500 mb-2 px-4">
         {dashTitle}
       </Link>
-      <Link to="/profile" className="block text-gray-600 hover:text-blue-500 mb-2 px-4">Profile</Link>
+      <Link to="/profile" onClick={() => dispatch(toggleModal())} className="block text-gray-600 hover:text-blue-500 mb-2 px-4">Profile</Link>
       <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-500">Logout</button>
     </div>
   )

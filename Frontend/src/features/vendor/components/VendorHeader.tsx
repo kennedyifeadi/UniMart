@@ -6,14 +6,14 @@ export default function VendorHeader({ owner = 'Owner Name', business = 'My Busi
     <div className="w-full bg-blue-600 text-white py-6">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
         <div>
-          <div className="text-2xl font-semibold">Good evening, {owner}!</div>
+          <div className="text-2xl font-semibold font-heading">Good evening, {owner}!</div>
           <div className="text-sm text-white/90 mt-1">Welcome back to your Unimart business dashboard</div>
 
           <div className="mt-3 flex items-center gap-3 text-xs text-white/90">
             <div className="flex items-center gap-2">
               <SmartAvatar src={null} name={business} size="md" />
               <div className="flex flex-col">
-                <span className="font-medium">{business}</span>
+                <span className="font-medium font-heading">{business}</span>
                 <span className="text-[12px]">{faculty || 'Business'}</span>
               </div>
             </div>

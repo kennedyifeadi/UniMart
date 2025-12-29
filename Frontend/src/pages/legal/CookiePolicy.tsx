@@ -3,7 +3,7 @@ import React from 'react'
 const CookiePolicy: React.FC = () => {
   const lastUpdated = new Date().toLocaleDateString()
   return (
-    <main className="max-w-4xl mx-auto px-4 py-12 prose prose-lg">
+    <main className="max-w-4xl mx-auto px-4 py-12 prose prose-lg mt-20">
       <h1>Cookie Policy</h1>
       <p className="text-sm text-gray-600">Last Updated: {lastUpdated}</p>
 

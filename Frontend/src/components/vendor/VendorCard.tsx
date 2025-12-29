@@ -23,7 +23,7 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
         <img loading="lazy" src={vendor.imageUrl} alt={vendor.businessName} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300 ease-in-out" />
           <button
           onClick={(e) => { e.stopPropagation(); e.preventDefault(); toggleFavorite(vendor.id) }}
-          className={`absolute top-3 right-3 p-2 rounded-full text-white ${isFav ? 'bg-red-500' : 'bg-white/70 text-gray-800'}`}
+          className={`absolute top-3 left-3 p-2 rounded-full text-white ${isFav ? 'bg-red-500' : 'bg-white/70 text-gray-800'}`}
           aria-label={isFav ? 'Remove favorite' : 'Add favorite'}
         >
           <Heart className="w-4 h-4" />

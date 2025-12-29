@@ -8,6 +8,7 @@ import { db } from '../../../firebase/config'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../../store/slices/authSlice'
 import Toast from '../../../components/Toast'
+import Input from '../../../components/Auth/Input'
 
 type User = {
   uid: string
@@ -98,58 +99,59 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 cursor-pointer hover:opacity-80" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div className="absolute inset-0 bg-black/20" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-md mx-4 bg-white rounded-2xl shadow-lg">
-          <div className="flex items-center justify-between p-6 border-b">
+      <div className="relative z-10 w-full max-w-[400px] mx-auto bg-white rounded-2xl shadow p-6">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold text-[#2563eb]" style={{ fontFamily: 'cursive' }}>Edit Profile</h3>
           <button onClick={onClose} className="p-2 rounded hover:bg-gray-100">
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="flex flex-col items-center gap-3">
-              {preview ? (
-                <img src={preview} alt={fullName || 'avatar'} className="w-28 h-28 rounded-full object-cover" />
-              ) : (
-                <SmartAvatar src={null} name={fullName || 'User'} size="lg" />
-              )}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-[#2563eb] text-white rounded"
-                >
-                  <Camera size={16} /> Change Photo
-                </button>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
-              </div>
-            </div>
-
-            <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-gray-700">Full Name</label>
-              <input
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="mt-1 block w-full border rounded px-3 py-2"
-              />
-
-              <label className="block text-sm font-medium text-gray-700 mt-4">Faculty</label>
-              <select value={faculty ?? ''} onChange={(e) => setFaculty(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2">
-                <option value="">Select Faculty</option>
-                {FACULTIES.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-              </select>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex flex-col items-center gap-4">
+            {preview ? (
+              <img src={preview} alt={fullName || 'avatar'} className="w-24 h-24 rounded-full object-cover" />
+            ) : (
+              <SmartAvatar src={null} name={fullName || 'User'} size="lg" />
+            )}
+            <div className="w-full flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-[#2563eb] text-white rounded"
+              >
+                <Camera size={16} /> Change Photo
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end gap-3">
+          <div>
+            <Input
+              label="Full Name"
+              name="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Your full name"
+            />
+          </div>
+
+          <div>
+            <Input
+              label="Faculty"
+              name="faculty"
+              variant="select"
+              value={faculty ?? ''}
+              onChange={(e) => setFaculty(e.target.value)}
+              options={FACULTIES.map((f) => ({ value: f, label: f }))}
+              placeholder="Select Faculty"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} className="px-4 py-2 border rounded text-sm">
               Cancel
             </button>
