@@ -8,12 +8,12 @@ import CookiePolicy from "../pages/legal/CookiePolicy"
 import withMainLayout from '../layouts/WithMainLayout'
 import VendorRoute from './VendorRoute'
 import ProtectedRoute from './ProtectedRoute'
-import { Loader } from '../components/loader/Loader'
+import { Loader } from '../components/loader/Loaders'
 
 const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
 const Vendors = lazy(() => import('../pages/Vendors'))
-const Artisan = lazy(() => import('../features/artisan/Artisan'))
+const Artisan = lazy(() => import('../features/artisan/Artisans'))
 const BecomeAVendor = lazy(() => import('../pages/BecomeAVendor'))
 const VendorDashboard = lazy(() => import('../pages/vendor/Dashboard'))
 const EditVendorProfile = lazy(() => import('../features/vendor/pages/EditVendorProfile'))
