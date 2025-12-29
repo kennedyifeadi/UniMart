@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { doc, getDoc, runTransaction } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 import { useSelector } from 'react-redux'
 import type { RootState } from '../../store/store'
-import { ShieldCheck, MapPin, Star, MessageCircle } from 'lucide-react'
+import { ShieldCheck, MapPin, Star, MessageCircle, Lock } from 'lucide-react'
 
 // Strict interface per spec
 export interface IVendorProfile {
@@ -74,6 +74,15 @@ const Artisan: React.FC = () => {
   const [reviewComment, setReviewComment] = useState('')
   const [submittingReview, setSubmittingReview] = useState(false)
   const { currentUser, profile } = useSelector((state: RootState) => state.auth)
+  const loggedIn = Boolean(currentUser || profile)
+  const [showTooltip, setShowTooltip] = useState(false)
+  const hideTimer = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (hideTimer.current) window.clearTimeout(hideTimer.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (!id) return
@@ -411,16 +420,58 @@ const Artisan: React.FC = () => {
         <aside className="space-y-6">
           <div className="bg-white rounded-xl shadow p-6">
             <h4 className="font-semibold mb-3">Contact Vendor</h4>
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noreferrer"
-              className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-white ${vendor.whatsappNumber ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
-              onClick={(e) => { if (!vendor.whatsappNumber) e.preventDefault() }}
-            >
-              <MessageCircle />
-              <span>{vendor.whatsappNumber ? 'Chat on WhatsApp' : 'No Phone Provided'}</span>
-            </a>
+              {loggedIn ? (
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-white ${vendor.whatsappNumber ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
+                  onClick={(e) => { if (!vendor.whatsappNumber) e.preventDefault() }}
+                >
+                  <MessageCircle />
+                  <span>{vendor.whatsappNumber ? 'Chat on WhatsApp' : 'No Phone Provided'}</span>
+                </a>
+              ) : (
+                <div className="relative">
+                  <div className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-white bg-green-600">
+                    <MessageCircle />
+                    <span>Chat on WhatsApp</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-disabled="true"
+                    className="absolute inset-0 rounded-lg bg-black/20 flex items-center justify-center cursor-not-allowed"
+                    onMouseEnter={() => {
+                      setShowTooltip(true)
+                      if (hideTimer.current) window.clearTimeout(hideTimer.current)
+                      hideTimer.current = window.setTimeout(() => setShowTooltip(false), 3000)
+                    }}
+                    onMouseLeave={() => {
+                      if (hideTimer.current) window.clearTimeout(hideTimer.current)
+                      hideTimer.current = window.setTimeout(() => setShowTooltip(false), 3000)
+                    }}
+                    onClick={() => {
+                      setShowTooltip(true)
+                      if (hideTimer.current) window.clearTimeout(hideTimer.current)
+                      hideTimer.current = window.setTimeout(() => setShowTooltip(false), 3000)
+                    }}
+                  >
+                    <span className="p-2 rounded-full bg-white/90 flex items-center justify-center shadow">
+                      <Lock className="w-4 h-4 text-black" />
+                    </span>
+                  </button>
+
+                  <div
+                    aria-hidden={!showTooltip}
+                    className={`absolute left-0 -top-12 transform origin-left transition-all duration-300 z-50 ${showTooltip ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}
+                  >
+                    <div className="bg-white text-black text-xs px-3 py-2 rounded shadow-lg">
+                      You have to login to access this feature
+                    </div>
+                  </div>
+                </div>
+              )}
 
             <div className="mt-4 text-sm text-gray-700 space-y-2">
               <div><span className="text-gray-500">Owner:</span> <span className="font-medium">{vendor.ownerName || '—'}</span></div>

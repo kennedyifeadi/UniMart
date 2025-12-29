@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Star, Heart, CheckCircle } from 'lucide-react'
+import { Star, Heart, CheckCircle, Lock } from 'lucide-react'
 import type { IVendor } from '../../types'
 import trackEvent from '../../lib/analytics'
 import useUserInteractions from '../../hooks/useUserInteractions'
@@ -15,8 +15,19 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
   const navigate = useNavigate()
   const { toggleFavorite, trackVendorVisit } = useUserInteractions()
   const profile = useSelector((state: RootState) => state.auth.profile)
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser)
   const favorites: string[] = Array.isArray(profile?.favorites) ? (profile!.favorites as string[]) : []
   const isFav = favorites.includes(vendor.id)
+  const loggedIn = Boolean(currentUser || profile)
+
+  const [showTooltip, setShowTooltip] = useState(false)
+  const hideTimer = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (hideTimer.current) window.clearTimeout(hideTimer.current)
+    }
+  }, [])
   return (
     <article className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-0 overflow-hidden flex flex-col group">
       <div className="relative h-48 w-full bg-gray-100">
@@ -60,15 +71,59 @@ const VendorCard: React.FC<Props> = ({ vendor }) => {
           >
             View Profile
           </button>
-          <a
-            href={`https://wa.me/${vendor.phoneNumber}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 text-center py-2 rounded-md bg-[#22c55e] text-white font-medium"
-            onClick={() => trackEvent('vendor_contact_whatsapp', { vendorId: vendor.id, phone: vendor.phoneNumber })}
-          >
-            Contact via WhatsApp
-          </a>
+          {loggedIn ? (
+            <a
+              href={`https://wa.me/${vendor.phoneNumber}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex-1 text-center py-2 rounded-md bg-[#22c55e] text-white font-medium"
+              onClick={() => trackEvent('vendor_contact_whatsapp', { vendorId: vendor.id, phone: vendor.phoneNumber })}
+            >
+              Contact via WhatsApp
+            </a>
+          ) : (
+            <div className="relative">
+              {/* Green button visible but non-interactive underneath */}
+              <div className="flex-1 text-center py-2 rounded-md bg-[#22c55e] text-white font-medium flex items-center justify-center">
+                Contact via WhatsApp
+              </div>
+
+              {/* Overlay locks interaction and shows lock icon */}
+              <button
+                type="button"
+                aria-disabled="true"
+                className="absolute inset-0 rounded-md bg-black/20 flex items-center justify-center cursor-not-allowed"
+                onMouseEnter={() => {
+                  setShowTooltip(true)
+                  if (hideTimer.current) window.clearTimeout(hideTimer.current)
+                  hideTimer.current = window.setTimeout(() => setShowTooltip(false), 3000)
+                }}
+                onMouseLeave={() => {
+                  if (hideTimer.current) window.clearTimeout(hideTimer.current)
+                  hideTimer.current = window.setTimeout(() => setShowTooltip(false), 3000)
+                }}
+                onClick={() => {
+                  setShowTooltip(true)
+                  if (hideTimer.current) window.clearTimeout(hideTimer.current)
+                  hideTimer.current = window.setTimeout(() => setShowTooltip(false), 3000)
+                }}
+              >
+                <span className="p-2 rounded-full bg-white/90 flex items-center justify-center shadow">
+                  <Lock className="w-4 h-4 text-black" />
+                </span>
+              </button>
+
+              {/* Tooltip: white background, small black text, shadow, slides in from left, z-50 */}
+              <div
+                aria-hidden={!showTooltip}
+                className={`absolute left-0 -top-12 transform origin-left transition-all duration-300 z-50 ${showTooltip ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}
+              >
+                <div className="bg-white text-black text-xs px-3 py-2 rounded shadow-lg">
+                  You have to login to access this feature
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </article>

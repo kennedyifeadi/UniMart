@@ -1,6 +1,7 @@
 import { DynamicBackground } from "./DynamicBackground"
 import Bg from "../../assets/images/Aerial_view_in_University_of_Ibadan.jpg"
 import { Button } from "../buttonb/Button"
+import { Link } from "react-router-dom"
 
 export const LandingPage = () => {
     return (
@@ -11,8 +12,8 @@ export const LandingPage = () => {
                 <span className="md:text-2xl text-lg md:font-medium">Discover. Connect. Support.</span>
                 <p className="md:text-[18px] text-[16px] md:w-[60%]">Connect with fellow students, discover local businesses, and support your campus community. Your one-stop marketplace for everything student life.</p>
                 <div className="flex gap-4 md:flex-row flex-col">
-                    <Button classname="!bg-[#2563eb] hover:!bg-[#0a54f4]">Explore Local Business</Button>
-                    <Button classname="border border-white hover:bg-white hover:text-black">Start Selling</Button>
+                    <Link to={"/vendors"}><Button classname="!bg-[#2563eb] hover:!bg-[#0a54f4]"> Explore Local Business </Button></Link>
+                   <Link to={"/becomeavendor"}> <Button classname="border border-white hover:bg-white hover:text-black">Start Selling </Button></Link>
                 </div>
             </div>
         </div>

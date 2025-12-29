@@ -167,6 +167,7 @@ const authSlice = createSlice({
       state.currentUser = null
       state.role = 'user'
       state.isVendor = false
+      state.profile = null
       state.loading = false
       state.error = null
     },
