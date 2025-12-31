@@ -10,6 +10,7 @@ import maleProfile from "../assets/images/MaleProfile.jpg"
 import FemaleProfile from "../assets/images/FemaleProfile.jpg"
 import { StudentCard } from "../components/about/StudentCard"
 import { Button } from "../components/buttonb/Button"
+import kennedy from "../assets/images/SARE-EXCO4.jpg"
 
 
 
@@ -54,7 +55,7 @@ const About = () => {
   ]
   const teamMembers = [
     {
-      name: 'Motunrayo',
+      name: 'Morayo',
       role: 'Founder & CEO',
       bio: 'Passionate about student entrepreneurship',
       image: FemaleProfile,
@@ -71,14 +72,14 @@ const About = () => {
     },
     {
       name: 'Kennedy Ifeadi',
-      role: 'Head of Community',
+      role: 'Head of Engineering',
       bio: 'Creating beautiful user experiences',
-      image: maleProfile,
+      image: kennedy,
       linkedin: '',
       instagram: ''
     },
     {
-      name: 'Maya Sari',
+      name: 'Suzanne',
       role: 'Head of Design',
       bio: 'Connecting students across UI',
       image: FemaleProfile,
